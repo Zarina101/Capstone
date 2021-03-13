@@ -1,0 +1,1011 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={PartB},
+            pdfauthor={Ulita Gilbert},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{PartB}
+\author{Ulita Gilbert}
+\date{05/03/2021}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{data-dictionary}{%
+\section{Data Dictionary}\label{data-dictionary}}
+
+For the purposes of this EDA, the following variables and definitions
+are important.
+
+The population in this dataset is the incoming cohort of students in
+Fall of 2019 and 2020. These students are first time degree or
+certificate seekers and have no prior tertiary education. They may have
+earned AP credits in highschool.
+
+\textbf{Fall2019} refers to the incoming freshman cohort in Fall2019.
+This is term year 2020.\\
+\textbf{Fall2020} refers to the incoming freshman cohort in Fall2020.
+This is term year 2021.
+
+\textbf{Variables of Interest:}\\
+\textbf{hours\_earned:} refers to credit hours the student has earned in
+their first Fall semester ( this can include credits earned in Summer
+school second session- Summer 1 and AP credits earned in highschool).
+\textbf{hours\_attempted:} refers to credit hours the student has
+attempted in their first Fall semester ( this may include credits
+attempted in Summerschool second session - Summer 1) and hours spent on
+developmental non credit courses.
+
+\textbf{full\_part:} is the student full-time (FT) or part-time (PT)
+
+\textbf{major:} degree programme student is registered for or
+certificate\&LR ( letter of recommendation.) All certificates and
+letters of recommendations have been grouped together.
+
+\textbf{hours\_earned\_rate:} Ratio of hours\_earned/hours\_attempted
+
+\hypertarget{import-data}{%
+\section{Import Data}\label{import-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#import data for Fall 2016 to Fall 2020}
+\CommentTok{# set directory}
+\KeywordTok{setwd}\NormalTok{(}\StringTok{'/Users/ulita/Documents/CAPSTONE205/Capstone/Capstone_Data/Raw_Data'}\NormalTok{)}
+
+\NormalTok{initial_df_}\DecValTok{2019}\NormalTok{<-}\KeywordTok{read_xlsx}\NormalTok{(}\StringTok{"FTEIC F19.xlsx"}\NormalTok{)}
+\NormalTok{initial_df_}\DecValTok{2020}\NormalTok{<-}\KeywordTok{read_xlsx}\NormalTok{(}\StringTok{"FTEIC F20.xlsx"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{data-wrangling}{%
+\section{Data Wrangling}\label{data-wrangling}}
+
+\hypertarget{create-dataframe}{%
+\section{Create Dataframe}\label{create-dataframe}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \CommentTok{#create dataframe to compare credits in Fall 2019 and Fall 2020 :    df_credits }
+\NormalTok{df_credits<-}\StringTok{ }\KeywordTok{bind_rows}\NormalTok{(initial_df_}\DecValTok{2019}\NormalTok{,initial_df_}\DecValTok{2020}\NormalTok{)}
+
+\KeywordTok{head}\NormalTok{(df_credits)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 50
+##   `U-Number` Sex   IPEDS_RACE_DESC `Age at Start` HIGH_SCHOOL FULL_PART CITY 
+##        <dbl> <chr> <chr>           <chr>          <chr>       <chr>     <chr>
+## 1   20190001 F     Hispanic        18 - 20        Out of Sta~ PT        Gait~
+## 2   20190002 M     Hispanic        18 - 20        Walter Joh~ FT        Rock~
+## 3   20190003 F     Multi-Race      18 - 20        Wheaton Hi~ PT        Gait~
+## 4   20190004 M     Asian           18 - 20        Thomas Spr~ PT        Gait~
+## 5   20190005 M     Hispanic        18 - 20        FOREIGN / ~ FT        Chev~
+## 6   20190006 F     Hispanic        18 - 20        Springbroo~ FT        Silv~
+## # ... with 43 more variables: STAT_CODE <chr>, ZIP <dbl>, PELL_GRANT <chr>,
+## #   CAMP_CODE <chr>, Major <chr>, HOURS_ATTEMPTED <chr>, HOURS_EARNED <chr>,
+## #   MC_GPA <dbl>, PASS_ENGL <chr>, PASS_MATH <chr>, term_year <chr>,
+## #   TERM_YEAR1_10 <chr>, TERM_YEAR1_20 <chr>, TERM_YEAR1_24 <chr>,
+## #   TERM_YEAR1_25 <chr>, TERM_YEAR1_30 <chr>, TERM_YEAR1_40 <chr>,
+## #   TERM_YEAR2_10 <chr>, TERM_YEAR2_20 <chr>, TERM_YEAR2_24 <chr>,
+## #   TERM_YEAR2_25 <chr>, TERM_YEAR2_30 <chr>, TERM_YEAR2_40 <chr>,
+## #   TERM_YEAR3_10 <chr>, TERM_YEAR3_20 <chr>, TERM_YEAR3_24 <chr>,
+## #   TERM_YEAR3_25 <chr>, TERM_YEAR3_30 <chr>, TERM_YEAR3_40 <chr>,
+## #   TERM_YEAR4_10 <chr>, TERM_YEAR4_20 <chr>, TERM_YEAR4_24 <chr>,
+## #   TERM_YEAR4_25 <chr>, TERM_YEAR4_30 <chr>, TERM_YEAR4_40 <chr>,
+## #   TERM_YEAR5_10 <chr>, TERM_YEAR5_20 <chr>, TERM_YEAR5_24 <chr>,
+## #   TERM_YEAR5_25 <chr>, TERM_YEAR5_30 <chr>, first_grad_date <lgl>,
+## #   first_degree <lgl>, TERM_YEAR5_40 <chr>
+\end{verbatim}
+
+\hypertarget{select-columns-of-interest-format-names}{%
+\subsection{Select Columns of Interest \& Format
+Names}\label{select-columns-of-interest-format-names}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#clean names using janitor package}
+\NormalTok{df_credits<-df_credits }\OperatorTok{%>%}
+\StringTok{             }\KeywordTok{clean_names}\NormalTok{()}
+
+\CommentTok{#drop columns not interested in}
+
+\NormalTok{df_credits<-df_credits }\OperatorTok{%>%}
+\StringTok{             }\KeywordTok{select}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{18}\NormalTok{))}
+
+\CommentTok{# rename columns to make it user friendly}
+\NormalTok{df_credits<-df_credits }\OperatorTok{%>%}
+\StringTok{            }\KeywordTok{rename}\NormalTok{(}\StringTok{"age"}\NormalTok{=}\StringTok{ "age_at_start"}\NormalTok{, }\StringTok{"race"}\NormalTok{=}\StringTok{ "ipeds_race_desc"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{overview-of-data}{%
+\subsection{Overview of Data}\label{overview-of-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# summary statistics of dataframing using function skimr creates a table of summary statistics of all variables in the dataframe}
+\KeywordTok{skim}\NormalTok{(df_credits)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule
+\endhead
+Name & df\_credits\tabularnewline
+Number of rows & 7519\tabularnewline
+Number of columns & 18\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Column type frequency: &\tabularnewline
+character & 15\tabularnewline
+numeric & 3\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Group variables & None\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: character}
+
+\begin{longtable}[]{@{}lrrrrrrr@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & min & max & empty &
+n\_unique & whitespace\tabularnewline
+\midrule
+\endhead
+sex & 0 & 1.00 & 1 & 1 & 0 & 4 & 0\tabularnewline
+race & 0 & 1.00 & 5 & 22 & 0 & 9 & 0\tabularnewline
+age & 0 & 1.00 & 4 & 7 & 0 & 5 & 0\tabularnewline
+high\_school & 0 & 1.00 & 7 & 30 & 0 & 172 & 0\tabularnewline
+full\_part & 0 & 1.00 & 2 & 2 & 0 & 2 & 0\tabularnewline
+city & 21 & 1.00 & 5 & 19 & 0 & 132 & 0\tabularnewline
+stat\_code & 21 & 1.00 & 2 & 2 & 0 & 16 & 0\tabularnewline
+pell\_grant & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+camp\_code & 154 & 0.98 & 1 & 1 & 0 & 6 & 0\tabularnewline
+major & 33 & 1.00 & 1 & 61 & 0 & 35 & 0\tabularnewline
+hours\_attempted & 87 & 0.99 & 2 & 4 & 0 & 55 & 0\tabularnewline
+hours\_earned & 87 & 0.99 & 2 & 4 & 0 & 56 & 0\tabularnewline
+pass\_engl & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+pass\_math & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+term\_year & 0 & 1.00 & 4 & 4 & 0 & 2 & 0\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}lrrrrrrrrrl@{}}
+\toprule
+\begin{minipage}[b]{0.09\columnwidth}\raggedright
+skim\_variable\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\raggedleft
+n\_missing\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedleft
+complete\_rate\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\raggedleft
+mean\strut
+\end{minipage} & \begin{minipage}[b]{0.05\columnwidth}\raggedleft
+sd\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\raggedleft
+p0\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\raggedleft
+p25\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\raggedleft
+p50\strut
+\end{minipage} & \begin{minipage}[b]{0.07\columnwidth}\raggedleft
+p75\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\raggedleft
+p100\strut
+\end{minipage} & \begin{minipage}[b]{0.04\columnwidth}\raggedright
+hist\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+u\_number\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedleft
+1.00\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20196656.07\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedleft
+5028.73\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+20190001\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20191880.5\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20193760.0\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20201708.5\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+20203588\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\raggedright
+▇▃▁▂▇\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+zip\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+21\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedleft
+1.00\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20884.18\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedleft
+1518.62\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+1460\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20853.0\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20877.0\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+20902.0\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+94025\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\raggedright
+▁▇▁▁▁\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.09\columnwidth}\raggedright
+mc\_gpa\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+87\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedleft
+0.99\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+2.16\strut
+\end{minipage} & \begin{minipage}[t]{0.05\columnwidth}\raggedleft
+1.48\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+0.5\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+2.5\strut
+\end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedleft
+3.5\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+4\strut
+\end{minipage} & \begin{minipage}[t]{0.04\columnwidth}\raggedright
+▆▂▃▅▇\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+There are 18 variables and 7519 rows of data. Each row of data
+represents 1 student. There are 3931 rows of data for Fall2019 and 3588
+rows of data for Fall2020. Need to change the data types for
+hours\_attempted and hours\_earned to numeric. u\_number should be a
+charater. Most of the missing values are in camp\_code. For the purposes
+of this exercise, this variable is not important. There are also 87
+missing values in hours attempted and hours earned. As these two are the
+variables of interest and GPA are of interest, I will drop the rows in
+these variables with missing values.
+
+\hypertarget{change-datatypes}{%
+\subsection{Change Datatypes}\label{change-datatypes}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Change datatypes}
+\NormalTok{df_credits}\OperatorTok{$}\NormalTok{hours_attempted<-}\StringTok{ }\KeywordTok{as.integer}\NormalTok{(df_credits}\OperatorTok{$}\NormalTok{hours_attempted)}
+\NormalTok{df_credits}\OperatorTok{$}\NormalTok{hours_earned<-}\StringTok{ }\KeywordTok{as.integer}\NormalTok{(df_credits}\OperatorTok{$}\NormalTok{hours_earned)}
+\NormalTok{df_credits}\OperatorTok{$}\NormalTok{mc_gpa<-}\StringTok{ }\KeywordTok{as.double}\NormalTok{(df_credits}\OperatorTok{$}\NormalTok{mc_gpa)}
+\NormalTok{df_credits}\OperatorTok{$}\NormalTok{u_number<-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(df_credits}\OperatorTok{$}\NormalTok{u_number)}
+\NormalTok{df_credits}\OperatorTok{$}\NormalTok{zip<-}\StringTok{ }\KeywordTok{as.character}\NormalTok{(df_credits}\OperatorTok{$}\NormalTok{zip)}
+
+\CommentTok{#drop missing values in hours_attempted, hours_earned and mc_gap}
+
+\NormalTok{df_credits <-}\StringTok{ }\NormalTok{df_credits }\OperatorTok{%>%}
+\StringTok{              }\KeywordTok{drop_na}\NormalTok{(hours_attempted,hours_earned)}
+\end{Highlighting}
+\end{Shaded}
+
+Summarise data again
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{skim}\NormalTok{(df_credits)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule
+\endhead
+Name & df\_credits\tabularnewline
+Number of rows & 7432\tabularnewline
+Number of columns & 18\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Column type frequency: &\tabularnewline
+character & 15\tabularnewline
+numeric & 3\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Group variables & None\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: character}
+
+\begin{longtable}[]{@{}lrrrrrrr@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & min & max & empty &
+n\_unique & whitespace\tabularnewline
+\midrule
+\endhead
+u\_number & 0 & 1.00 & 8 & 8 & 0 & 7432 & 0\tabularnewline
+sex & 0 & 1.00 & 1 & 1 & 0 & 4 & 0\tabularnewline
+race & 0 & 1.00 & 5 & 22 & 0 & 9 & 0\tabularnewline
+age & 0 & 1.00 & 4 & 7 & 0 & 5 & 0\tabularnewline
+high\_school & 0 & 1.00 & 7 & 30 & 0 & 171 & 0\tabularnewline
+full\_part & 0 & 1.00 & 2 & 2 & 0 & 2 & 0\tabularnewline
+city & 20 & 1.00 & 5 & 19 & 0 & 131 & 0\tabularnewline
+stat\_code & 20 & 1.00 & 2 & 2 & 0 & 16 & 0\tabularnewline
+zip & 20 & 1.00 & 4 & 5 & 0 & 166 & 0\tabularnewline
+pell\_grant & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+camp\_code & 152 & 0.98 & 1 & 1 & 0 & 6 & 0\tabularnewline
+major & 33 & 1.00 & 1 & 61 & 0 & 35 & 0\tabularnewline
+pass\_engl & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+pass\_math & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+term\_year & 0 & 1.00 & 4 & 4 & 0 & 2 & 0\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}lrrrrrrrrrl@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & mean & sd & p0 & p25 &
+p50 & p75 & p100 & hist\tabularnewline
+\midrule
+\endhead
+hours\_attempted & 0 & 1 & 12.29 & 6.27 & 0 & 9.0 & 12.0 & 15.0 & 54 &
+▆▇▁▁▁\tabularnewline
+hours\_earned & 0 & 1 & 7.72 & 7.40 & 0 & 3.0 & 6.0 & 12.0 & 54 &
+▇▃▁▁▁\tabularnewline
+mc\_gpa & 0 & 1 & 2.16 & 1.48 & 0 & 0.5 & 2.5 & 3.5 & 4 &
+▆▂▃▅▇\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{missing-values-and-data-anomalies}{%
+\subsection{Missing Values and data
+Anomalies}\label{missing-values-and-data-anomalies}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_credits}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{count}\NormalTok{(hours_attempted}\OperatorTok{==}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 7 x 4
+## # Groups:   term_year, full_part [4]
+##   term_year full_part `hours_attempted == 0`     n
+##   <chr>     <chr>     <lgl>                  <int>
+## 1 2020      FT        FALSE                   2252
+## 2 2020      FT        TRUE                       3
+## 3 2020      PT        FALSE                   1609
+## 4 2020      PT        TRUE                      27
+## 5 2021      FT        FALSE                   2147
+## 6 2021      PT        FALSE                   1377
+## 7 2021      PT        TRUE                      17
+\end{verbatim}
+
+Term year 2020: There are 3 full time and 27 part time students who
+attempted zero hours. Term year 2021: There are 17 part time students
+who attempted zero hours. These 47 observations will be dropped.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# remove students who attempted 0 hours}
+
+\NormalTok{df_credits <-}\StringTok{ }\NormalTok{df_credits}\OperatorTok{%>%}
+\StringTok{              }\KeywordTok{filter}\NormalTok{(., hours_attempted }\OperatorTok{!=}\StringTok{ }\DecValTok{0}\NormalTok{)}
+              
+\KeywordTok{skim}\NormalTok{(df_credits)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule
+\endhead
+Name & df\_credits\tabularnewline
+Number of rows & 7385\tabularnewline
+Number of columns & 18\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Column type frequency: &\tabularnewline
+character & 15\tabularnewline
+numeric & 3\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Group variables & None\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: character}
+
+\begin{longtable}[]{@{}lrrrrrrr@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & min & max & empty &
+n\_unique & whitespace\tabularnewline
+\midrule
+\endhead
+u\_number & 0 & 1.00 & 8 & 8 & 0 & 7385 & 0\tabularnewline
+sex & 0 & 1.00 & 1 & 1 & 0 & 4 & 0\tabularnewline
+race & 0 & 1.00 & 5 & 22 & 0 & 9 & 0\tabularnewline
+age & 0 & 1.00 & 4 & 7 & 0 & 5 & 0\tabularnewline
+high\_school & 0 & 1.00 & 7 & 30 & 0 & 169 & 0\tabularnewline
+full\_part & 0 & 1.00 & 2 & 2 & 0 & 2 & 0\tabularnewline
+city & 19 & 1.00 & 5 & 19 & 0 & 130 & 0\tabularnewline
+stat\_code & 19 & 1.00 & 2 & 2 & 0 & 16 & 0\tabularnewline
+zip & 19 & 1.00 & 4 & 5 & 0 & 164 & 0\tabularnewline
+pell\_grant & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+camp\_code & 152 & 0.98 & 1 & 1 & 0 & 6 & 0\tabularnewline
+major & 33 & 1.00 & 1 & 61 & 0 & 35 & 0\tabularnewline
+pass\_engl & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+pass\_math & 0 & 1.00 & 1 & 1 & 0 & 2 & 0\tabularnewline
+term\_year & 0 & 1.00 & 4 & 4 & 0 & 2 & 0\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}lrrrrrrrrrl@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & mean & sd & p0 & p25 &
+p50 & p75 & p100 & hist\tabularnewline
+\midrule
+\endhead
+hours\_attempted & 0 & 1 & 12.36 & 6.22 & 1 & 9.00 & 12.0 & 15.0 & 54 &
+▆▇▁▁▁\tabularnewline
+hours\_earned & 0 & 1 & 7.77 & 7.40 & 0 & 3.00 & 6.0 & 12.0 & 54 &
+▇▃▁▁▁\tabularnewline
+mc\_gpa & 0 & 1 & 2.17 & 1.48 & 0 & 0.62 & 2.5 & 3.5 & 4 &
+▆▂▃▅▇\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{degree-seeking-students}{%
+\subsection{Degree Seeking Students}\label{degree-seeking-students}}
+
+Create dataframe for degree seeking students only
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#check majors list for undeclared and missing values.}
+
+\NormalTok{df_credits}\OperatorTok{%>%}\StringTok{ }\KeywordTok{count}\NormalTok{(major)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 36 x 2
+##    major                        n
+##    <chr>                    <int>
+##  1 0                           16
+##  2 American Sign Language      12
+##  3 Applied Geography           10
+##  4 Architectural Technology    75
+##  5 Art                        108
+##  6 Broadcast Media             29
+##  7 Building Trade              88
+##  8 Business                   880
+##  9 Certificate & LR           221
+## 10 Communication               68
+## # ... with 26 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{dim}\NormalTok{(df_credits)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7385   18
+\end{verbatim}
+
+There are 72 students with undeclared majors. 16 students with majors
+listed as 0 and 33 listed as NA. Due to privacy reasons, students have
+been grouped so as not to identify individual students. Degree Major
+groupings with less than 10 students have been listed as NA or 0. At
+this point in time I will not remove these data points, because for the
+purposes of this study, Major names are not required. I will change the
+NA in major to `Field2' and the 0 to Field1. Students enrolled for a
+certificate or Letter of Recommendation have been grouped togther
+irrespective of field.
+
+Create dataframe with degrees only
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#remove certificates, NA refers to degree majors which have not been named to protect student privacy.}
+\NormalTok{df_creditsDegrees<-}\KeywordTok{subset}\NormalTok{(df_credits, major}\OperatorTok{!=}\StringTok{"Certificate & LR"} \OperatorTok{||}\StringTok{ }\NormalTok{major }\OperatorTok{==}\StringTok{'NA'}\NormalTok{)}
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\KeywordTok{count}\NormalTok{(major)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 36 x 2
+##    major                        n
+##    <chr>                    <int>
+##  1 0                           16
+##  2 American Sign Language      12
+##  3 Applied Geography           10
+##  4 Architectural Technology    75
+##  5 Art                        108
+##  6 Broadcast Media             29
+##  7 Building Trade              88
+##  8 Business                   880
+##  9 Certificate & LR           221
+## 10 Communication               68
+## # ... with 26 more rows
+\end{verbatim}
+
+There are 221 Certificate \& LR students. I will drop these non-degree
+programmes and focus on degree majors. I have retained tha majors
+grouped as NA.
+
+\hypertarget{full-time-versus-part-time}{%
+\subsection{Full time versus
+Part-time}\label{full-time-versus-part-time}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#count number of full time versus part-time degree students.}
+
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year)}\OperatorTok{%>%}
+\StringTok{                     }\KeywordTok{count}\NormalTok{(full_part)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 3
+## # Groups:   term_year [2]
+##   term_year full_part     n
+##   <chr>     <chr>     <int>
+## 1 2020      FT         2252
+## 2 2020      PT         1609
+## 3 2021      FT         2147
+## 4 2021      PT         1377
+\end{verbatim}
+
+Degree Seeking students:In term year 2020, there were 2252 full time
+degree seeking students and 1609 part time degree seeking students. In
+term year 2021, there were 2147 full time degree seeking students and
+1377 part time degree seeking students. Note that these numbers are
+presented after the data has been partially cleaned. More rows of data
+will be removed after the other variables of interest have been cleaned.
+
+\hypertarget{hours-attempted-and-hours-earned-by-degree-seeking-students}{%
+\subsection{Hours Attempted and Hours Earned by Degree Seeking
+Students}\label{hours-attempted-and-hours-earned-by-degree-seeking-students}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# AP credits can be given for courses taken at highschool.}
+\CommentTok{#Check number of students with hours_earned greater than hours_attempted}
+
+\NormalTok{df_credits }\OperatorTok{%>%}\StringTok{ }\KeywordTok{count}\NormalTok{(hours_attempted}\OperatorTok{<}\NormalTok{hours_earned)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 2
+##   `hours_attempted < hours_earned`     n
+##   <lgl>                            <int>
+## 1 FALSE                             7380
+## 2 TRUE                                 5
+\end{verbatim}
+
+There are 5 students with attempted hours smaller than hours earned.
+This may be due to AP credits and will be addressed later.
+
+Histogram of hours\_attempted by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df_creditsDegrees, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ hours_attempted))}\OperatorTok{+}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ term_year))}
+\NormalTok{p1<-}\StringTok{ }\NormalTok{p }\OperatorTok{+}\StringTok{ }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}
+
+\NormalTok{p1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+Boxplots of hours\_attempted by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p11 =}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df_creditsDegrees, }\KeywordTok{aes}\NormalTok{(hours_attempted))}
+\NormalTok{p11 }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{colour =}\NormalTok{ term_year)) }\OperatorTok{+}
+\StringTok{       }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+Density plot of hours\_attempted by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(df_creditsDegrees, }\KeywordTok{aes}\NormalTok{(hours_attempted, }\DataTypeTok{fill =}\NormalTok{ term_year)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_density}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Hours attempted"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{( }\StringTok{"Density"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-15-1.pdf}
+Fivenum Summary
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_credits}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{n}\NormalTok{(),}
+            \DataTypeTok{min =} \KeywordTok{fivenum}\NormalTok{(hours_attempted)[}\DecValTok{1}\NormalTok{],}
+            \DataTypeTok{Q1 =} \KeywordTok{fivenum}\NormalTok{(hours_attempted)[}\DecValTok{2}\NormalTok{],}
+            \DataTypeTok{median =} \KeywordTok{fivenum}\NormalTok{(hours_attempted)[}\DecValTok{3}\NormalTok{],}
+            \DataTypeTok{Q3 =} \KeywordTok{fivenum}\NormalTok{(hours_attempted)[}\DecValTok{4}\NormalTok{],}
+            \DataTypeTok{max =} \KeywordTok{fivenum}\NormalTok{(hours_attempted)[}\DecValTok{5}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'term_year' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 4 x 8
+## # Groups:   term_year [2]
+##   term_year full_part     n   min    Q1 median    Q3   max
+##   <chr>     <chr>     <int> <dbl> <dbl>  <dbl> <dbl> <dbl>
+## 1 2020      FT         2252     3    12     13    15    53
+## 2 2020      PT         1609     1     6      8    10    51
+## 3 2021      FT         2147     3    12     14    16    54
+## 4 2021      PT         1377     1     5      8    10    47
+\end{verbatim}
+
+Students who attempted less than 3 hours
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{count}\NormalTok{(hours_attempted}\OperatorTok{<}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 4
+## # Groups:   term_year, full_part [4]
+##   term_year full_part `hours_attempted < 3`     n
+##   <chr>     <chr>     <lgl>                 <int>
+## 1 2020      FT        FALSE                  2252
+## 2 2020      PT        FALSE                  1568
+## 3 2020      PT        TRUE                     41
+## 4 2021      FT        FALSE                  2147
+## 5 2021      PT        FALSE                  1361
+## 6 2021      PT        TRUE                     16
+\end{verbatim}
+
+Students who attempted more than 18hours
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{count}\NormalTok{(hours_attempted}\OperatorTok{>}\DecValTok{18}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8 x 4
+## # Groups:   term_year, full_part [4]
+##   term_year full_part `hours_attempted > 18`     n
+##   <chr>     <chr>     <lgl>                  <int>
+## 1 2020      FT        FALSE                   1925
+## 2 2020      FT        TRUE                     327
+## 3 2020      PT        FALSE                   1553
+## 4 2020      PT        TRUE                      56
+## 5 2021      FT        FALSE                   1857
+## 6 2021      FT        TRUE                     290
+## 7 2021      PT        FALSE                   1330
+## 8 2021      PT        TRUE                      47
+\end{verbatim}
+
+\hypertarget{hours-attempted-summary}{%
+\subsubsection{Hours Attempted Summary}\label{hours-attempted-summary}}
+
+The distributions appeared to be skewed to the right. Incoming students
+are allowed to get AP credits for courses taken at highschool. The
+distributions for part-time student in 2019 and 2020 appear to follow a
+similar distribution. Peaks can be attributed to the fact that most
+courses are 3 or 4 credit courses. The college offers very few 2 credit
+courses. 41 part time students attempted less than 3 hours in term year
+2020 and 16 part time students attempted less than 3 hours in term year
+2021. Students also need special permission to enroll in more than 18
+credits. In term year 2020, 327 full time and 56 part time students
+attempted more than 18 hours. In term year 2021, 290 full time and 47
+part time degree seeking students attempted more than 18 hours. As non
+credit hours and credit hours are included in the hours attempted
+variable, I will use the hours earned variable to filter the datasets
+and remove outliers.
+
+Histogram of hours\_earned by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df_creditsDegrees, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ hours_earned))}\OperatorTok{+}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ term_year))}
+\NormalTok{p1<-}\StringTok{ }\NormalTok{p }\OperatorTok{+}\StringTok{ }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}
+
+\NormalTok{p1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-19-1.pdf}
+Boxplots of hours\_earned by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p11 =}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df_creditsDegrees, }\KeywordTok{aes}\NormalTok{(hours_earned))}
+\NormalTok{p11 }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{colour =}\NormalTok{ term_year)) }\OperatorTok{+}
+\StringTok{       }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+Density plot of hours\_earned by year
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(df_credits, }\KeywordTok{aes}\NormalTok{(hours_earned, }\DataTypeTok{fill =}\NormalTok{ term_year)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_density}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.2}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{full_part)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Hours Earned"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{( }\StringTok{"Density"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{PartBv5_files/figure-latex/unnamed-chunk-21-1.pdf}
+Hours Earned Fivenum Summary
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_credits}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{n}\NormalTok{(),}
+            \DataTypeTok{min =} \KeywordTok{fivenum}\NormalTok{(hours_earned)[}\DecValTok{1}\NormalTok{],}
+            \DataTypeTok{Q1 =} \KeywordTok{fivenum}\NormalTok{(hours_earned)[}\DecValTok{2}\NormalTok{],}
+            \DataTypeTok{median =} \KeywordTok{fivenum}\NormalTok{(hours_earned)[}\DecValTok{3}\NormalTok{],}
+            \DataTypeTok{Q3 =} \KeywordTok{fivenum}\NormalTok{(hours_earned)[}\DecValTok{4}\NormalTok{],}
+            \DataTypeTok{max =} \KeywordTok{fivenum}\NormalTok{(hours_earned)[}\DecValTok{5}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'term_year' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 4 x 8
+## # Groups:   term_year [2]
+##   term_year full_part     n   min    Q1 median    Q3   max
+##   <chr>     <chr>     <int> <dbl> <dbl>  <dbl> <dbl> <dbl>
+## 1 2020      FT         2252     0     6      9    13    53
+## 2 2020      PT         1609     0     0      3     6    51
+## 3 2021      FT         2147     0     6     10    13    54
+## 4 2021      PT         1377     0     0      3     6    47
+\end{verbatim}
+
+\hypertarget{hours-earned-summary}{%
+\subsubsection{Hours Earned Summary}\label{hours-earned-summary}}
+
+The distributions appeared to be skewed to the right. Incoming students
+are allowed to get AP credits for courses taken at highschool. The
+distributions for part-time student in 2019 and 2020 appear to follow a
+similar distribution. Peaks can be attributed to the fact that most
+courses are 3 or 4 credit courses. The college offers very few 2 credit
+courses. Students also need special permission to enroll in more than
+18credits.
+
+Students who earned less than 3 hours
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{count}\NormalTok{(hours_earned}\OperatorTok{<}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8 x 4
+## # Groups:   term_year, full_part [4]
+##   term_year full_part `hours_earned < 3`     n
+##   <chr>     <chr>     <lgl>              <int>
+## 1 2020      FT        FALSE               2012
+## 2 2020      FT        TRUE                 240
+## 3 2020      PT        FALSE                882
+## 4 2020      PT        TRUE                 727
+## 5 2021      FT        FALSE               1857
+## 6 2021      FT        TRUE                 290
+## 7 2021      PT        FALSE                873
+## 8 2021      PT        TRUE                 504
+\end{verbatim}
+
+Hours earned equate to credits earned and is the indication of the
+progress a student is making towards a degree. In term year 2020, 240
+full time and 727 part time students earned less than 3 credits. In term
+year 2021, 290 full time and 504 part time earned less than 3 credits.
+
+Students who earned more than 18 credits
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df_creditsDegrees}\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(term_year,full_part)}\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{count}\NormalTok{(hours_earned}\OperatorTok{>}\DecValTok{18}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8 x 4
+## # Groups:   term_year, full_part [4]
+##   term_year full_part `hours_earned > 18`     n
+##   <chr>     <chr>     <lgl>               <int>
+## 1 2020      FT        FALSE                2015
+## 2 2020      FT        TRUE                  237
+## 3 2020      PT        FALSE                1570
+## 4 2020      PT        TRUE                   39
+## 5 2021      FT        FALSE                1955
+## 6 2021      FT        TRUE                  192
+## 7 2021      PT        FALSE                1337
+## 8 2021      PT        TRUE                   40
+\end{verbatim}
+
+EDA Questions: Will only use students seeking a degree.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Difference in enrollement numbers, demographics (race, gender,
+  highschool) in term year 2021 and term year 2020.
+\item
+  Did students in term year 2021 attempt more or less hours than
+  students in term year 2020.
+\item
+  Did students in term year 2021 earn more or less hours than students
+  in term year 2020.
+\item
+  Who are the students in the tail end of the hours attempted
+  distributions. ( attempted less than 3 hours or attempted more than
+  18hours)
+\item
+  Who are the students in the tail end of the hours earned
+  distributions. (Earn more than 18 credits or earn less than 3 credits)
+\item
+  Which subgroup is the best predictor of the population. Subgroup most
+  like the population. ( Smallest Effect Size.)
+\item
+  Distribution of hours\_attempted - hours earned.
+\item
+  Rate at which students earn credit.
+\end{enumerate}
+
+\end{document}

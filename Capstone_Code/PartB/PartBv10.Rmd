@@ -1,0 +1,565 @@
+---
+title: "PartB"
+author: "Ulita Gilbert"
+date: "12/03/2021"
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#import libraries
+
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library (janitor)
+library(skimr)
+library(plotly)
+```
+
+# Data Dictionary
+
+For the purposes of this Project the following variables and definitions are important.
+
+The population in this dataset is the incoming cohort of students in Fall of 2019 and 2020. These students are first time degree or certificate seekers and have no prior tertiary education. They may have earned AP credits in highschool.
+
+**Fall2019** refers to the incoming freshman cohort in Fall2019. This is term year 2020.  
+**Fall2020** refers to the incoming freshman cohort in Fall2020. This is term year 2021.  
+
+**Variables of Interest:**  
+**hours_earned:** refers to credit hours the student has earned in their first Fall semester ( this can include credits earned in Summer school second session- Summer 1 and AP credits earned in highschool).  
+**hours_attempted:** refers to credit  and non credit hours the student has attempted in their first Fall semester  ( this may include credits attempted in Summerschool second session - Summer 1).  
+**full_part:** is the student full-time (FT) or part-time (PT). Part time students are registered in less than 12 credit hours. Full-time students take at least 12 credits.
+**major:** degree programme student is registered for or certificate&LR ( letter of recommendation.) All certificates and letters of recommendations have been grouped together.   
+**hours_earned_rate:** Ratio of hours_earned/hours_attempted  
+
+
+# Data Wrangling
+
+## Import Data
+```{r}
+#import data for Fall 2016 to Fall 2020
+# set directory
+setwd('/Users/ulita/Documents/CAPSTONE205/Capstone/Capstone_Data/Raw_Data')
+
+initial_df_2019<-read_xlsx("FTEIC F19.xlsx")
+initial_df_2020<-read_xlsx("FTEIC F20.xlsx")
+
+```
+
+## Create Dataframe
+
+```{r}
+ #create dataframe to compare credits in Fall 2019 and Fall 2020 :    df_credits 
+df_initial<- bind_rows(initial_df_2019,initial_df_2020)
+
+head(df_initial)
+```
+
+
+## Select Columns of Interest & Format Names
+```{r}
+
+#clean names using janitor package
+df_initial<-df_initial %>%
+             clean_names()
+
+#drop columns not interested in
+
+df_initial<-df_initial %>%
+             select(c(1:20))
+
+# rename columns to make it user friendly
+df_initial<-df_initial %>%
+            rename("age"= "age_at_start", "race"= "ipeds_race_desc", 'summer1'= "term_year1_10", 'fall'='term_year1_20')
+
+```  
+
+
+## Overview of Data
+```{r}
+# summary statistics of dataframing using function skimr creates a table of summary statistics of all variables in the dataframe
+skim(df_initial)
+```
+
+There are 18 variables and 7519 rows of data. Each row of data represents 1 student. 
+There are 3931 rows of data for Fall2019 and 3588 rows of data for Fall2020.
+Need to change the data types for hours_attempted and hours_earned to numeric. u_number should be a charater. 
+Most of the missing values are in camp_code. For the purposes of this exercise, this variable is not important.
+There are also 87 missing values in hours attempted and hours earned. As these two are the variables of interest and GPA are of interest, I will drop the rows in these variables with missing values.
+
+## Change Datatypes
+```{r}
+# Change datatypes
+df_initial$hours_attempted<- as.integer(df_initial$hours_attempted)
+df_initial$hours_earned<- as.integer(df_initial$hours_earned)
+df_initial$mc_gpa<- as.double(df_initial$mc_gpa)
+df_initial$u_number<- as.character(df_initial$u_number)
+df_initial$zip<- as.character(df_initial$zip)
+
+#drop missing values in hours_attempted, hours_earned and mc_gap
+
+df_initial <- df_initial %>%
+              drop_na(hours_attempted,hours_earned)
+
+```
+
+Summarise data again
+```{r}
+skim(df_initial)
+```
+
+After removing the missing values in hours_earned and hours_attempted. There are 8 missing values in Fall. Closer inspection shows that these 8 students have a GPA of 0 even though there are hours attempted and hours earned. I will remove these students. 
+```{r}
+# remove students whose Fall term is NA
+
+df_initial <- df_initial%>%
+              filter(., !is.na(fall))
+              
+skim(df_initial)
+
+```
+
+
+## Missing Values and data Anomalies
+
+```{r}
+
+df_initial%>% group_by(term_year,full_part)%>%
+                      count(hours_attempted==0)
+
+```
+Term year 2020: There are 3 full time and 27 part time students who attempted zero hours.
+Term year 2021: There are 17 part time students who attempted zero hours.
+These 47 observations will be dropped.
+
+```{r}
+# remove students who attempted 0 hours
+
+df_initial <- df_initial%>%
+              filter(., hours_attempted != 0)
+              
+skim(df_initial)
+
+```
+
+
+
+Check missing values in variable major
+```{r}
+
+#check majors list for undeclared and missing values.
+
+df_initial%>% count(major)
+dim(df_initial)
+```
+
+There are 72 students with undeclared majors. 16 students with majors listed as 0 and 33 listed as NA.
+Due to privacy reasons, students have been grouped so as not to identify individual students. Degree Major groupings with less than 10 students have been listed as NA or 0. At this point in time I will not remove these data points, because for the purposes of this study, Major names are not required. 
+I will change the NA in major to 'Field2' and the 0 to Field1.
+Students enrolled for a certificate or Letter of Recommendation have been grouped togther irrespective of field.
+
+
+# Initial Data Analysis
+
+There are 221 Certificate & LR students in the initial dataset. I will drop these non-degree programmes
+and focus on degree majors only.
+
+
+Create dataframe with degrees only.
+I have retained the majors grouped as NA.
+```{r}
+
+#remove certificates, NA refers to degree majors which have not been named to protect student privacy.
+df_Degrees<-subset(df_initial, major!="Certificate & LR" || major =='NA')
+df_Degrees%>%count(major)
+```
+
+## Demographics of Degree Seeking Students
+
+
+### Full time versus Part-time Degree Students
+```{r}
+#count number of full time versus part-time degree students.
+
+df_Degrees%>% group_by(term_year)%>%
+                     count(full_part)
+
+
+```
+Degree Seeking students:In term year 2020, there were 2252 full time degree seeking students and 1609 part time degree seeking students.
+In term year 2021, there were 2147 full time degree seeking students and 1377 part time degree seeking students.
+
+
+### Race
+### Gender
+### Highschool
+### Pell grant
+
+## Registration in Summer School 1
+Hours attempted in Summer 1 are reported with hours_attempted in Fall.
+Credits earned in Summer 1 are usually reported with hours earned in Fall.
+```{r}
+#count number of full time versus part-time degree students.
+
+df_Degrees%>% group_by(term_year,full_part)%>%
+                     count(summer1=='Y')
+
+
+```
+There are 0 students who have attended Summer1. 
+Hence values reported for hours_earned are only for credits earned in fall and AP credits.
+Hours attempted in Fall are only for non credit developmental courses and credit courses taken in Fall.
+
+
+
+
+## Hours Attempted by Degree Seeking Students
+
+```{r}
+# AP credits can be given for courses taken at highschool.
+#Check number of students with hours_earned greater than hours_attempted
+
+df_Degrees %>% count(hours_attempted<hours_earned)
+```
+There are 5 students with attempted hours smaller than hours earned. This may be due to AP credits ( credits earned in high school) and will be addressed later.
+
+
+Histogram of hours_attempted by year
+```{r}
+
+p <- ggplot(df_Degrees, aes(x = hours_attempted))+ geom_histogram(aes(fill = term_year))
+p1<- p + facet_wrap(~full_part)
+
+p1
+```
+
+
+Boxplots of hours_attempted by year
+```{r}
+p11 = ggplot(df_Degrees, aes(hours_attempted))
+p11 + geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~full_part)
+```
+
+Density plot of hours_attempted by year
+```{r}
+ggplot(df_Degrees, aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+
+Fivenum Summary
+```{r}
+df_Degrees%>% group_by(term_year,full_part)%>%
+  summarise(n = n(),
+            min = fivenum(hours_attempted)[1],
+            Q1 = fivenum(hours_attempted)[2],
+            median = fivenum(hours_attempted)[3],
+            Q3 = fivenum(hours_attempted)[4],
+            max = fivenum(hours_attempted)[5])
+
+
+```
+Hours Attempted by Full-time students: The distributions for the hours attempted by full time students in term year 2020 and term year 2021 have similar shapes.  The first quartile for both distributions is 12. The median for term year 2021 (14 hours attempted) is slightly higher than that in 2020 (13 hours attempted). The 3rd quartile for 2020 is 15, whilst in 2021 it is 16. Both distibutions are also skewed right and have similar tail lengths. The maxium for 2020 is 53 and in 2021 it is 54. The distribution for 2021 has lower peaks because there were less students enrolled in 2021 than in 2020. Peaks can be attributed to the fact that most courses are 3 or 4 credit courses. The college offers very few 2 credit courses. 
+
+Hours Attempted by Part-time students: The distributions for the hours attempted by part time students in term year 2020 and term year 2021 have similar shapes. The first quartile in 2021 is 5 hours and is slightly lower than 2020 ( 6hours). Both distibutions are  skewed right. The right tail for 2021 is slightly shorter. The maxium for 2020 is 51 and in 2021 it is 47. The distribution for 2021 has lower peaks because there were less students enrolled in 2021 than in 2020. Peaks can be attributed to the fact that most courses are 3 or 4 credit courses. The college offers very few 2 credit courses.
+
+Students who attempted less than 3 hours
+```{r}
+
+df_Degrees%>% group_by(term_year,full_part)%>%
+                      count(hours_attempted<3)
+
+```
+
+Students who attempted more than 18hours
+```{r}
+
+df_Degrees%>% group_by(term_year,full_part)%>%
+                      count(hours_attempted>18)
+
+```
+
+
+41 part time students attempted less than 3 hours in term year 2020 and 16 part time students attempted less than 3 hours in term year 2021.
+Students also need special permission to enroll in more than 18 credits. In term year 2020, 327 full time and 56 part time students attempted more than 18 hours. In term year 2021, 290 full time and 47 part time degree seeking students attempted more than 18 hours.  As only a student who is registered for 12 or more credit hours is considered a full-time student.
+Students classified as part time and enrolled in more than 12hours, are enrolled in less than 12 credit hours in the Fall semester. 
+As non credit hours and credit hours are included in the hours attempted variable, I will use the hours earned variable to filter the datasets and remove outliers. 
+
+
+## Hours Earned by Degree Seeking Students
+
+Histogram of hours_earned by year
+```{r}
+
+p <- ggplot(df_Degrees, aes(x = hours_earned))+ geom_histogram(aes(fill = term_year))
+p1<- p + facet_wrap(~full_part)
+
+p1
+```
+Boxplots of hours_earned by year
+```{r}
+p11 = ggplot(df_Degrees, aes(hours_earned))
+p11 + geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~full_part)
+
+
+```
+
+
+Density plot of hours_earned by year
+```{r}
+ggplot(df_Degrees, aes(hours_earned, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours Earned") +
+  ylab( "Density")
+  
+```
+Hours Earned Fivenum Summary
+```{r}
+df_Degrees%>% group_by(term_year,full_part)%>%
+  summarise(n = n(),
+            min = fivenum(hours_earned)[1],
+            Q1 = fivenum(hours_earned)[2],
+            median = fivenum(hours_earned)[3],
+            Q3 = fivenum(hours_earned)[4],
+            max = fivenum(hours_earned)[5])
+
+
+```
+
+Hours Earned Summary
+The distributions appeared to be skewed to the right. Incoming students are allowed to get AP credits for courses taken at highschool.
+The distributions for part-time student in 2020 and 2021 appear to follow a similar distribution. Peaks can be attributed to the fact that most courses are 3 or 4 credit courses. The college offers very few 2 credit courses. Students also need special permission to enroll in more than 18credits. 
+Fulltime Students: The first quartile in term year 2020 and term year 2021 is 6 credits. The median for term year 2021 ( 10 hours earned) is slightly higher than the median in 2020 ( 9 hours earned). Both distributions has long tails on the right, with 2020 havinga maximum of 53 and 2021 having a maxium of 54. 
+Part time Students: Both 2020 and 2021 follow a similar distribution. The first quartile for both years is 0. This means that 25% of part time students earn 0 credits. 
+The median for both distributions is 3, ie. 50% of students earn up to 3 credits. The 3rd quartile for both distributions is 6. Both distributions have long tails.
+
+Students who earned less than 3 hours
+```{r}
+
+df_Degrees%>% group_by(term_year,full_part)%>%
+                      count(hours_earned<3)
+
+```
+
+Hours earned equate to credits earned and is the indication of the progress a student is making towards a degree.
+In term year 2020, 240 full time and 727 part time students earned less than 3 credits.
+In term year 2021, 290 full time and 504 part time earned less than 3 credits.
+
+Students who earned more than 18 credits
+```{r}
+
+df_Degrees%>% group_by(term_year,full_part)%>%
+                      count(hours_earned>18)
+
+```
+
+
+## Create New Variable hours_earned_rate
+```{r}
+# create variable pass_earned_hours
+# hours_earned_rate = hours_earned/hours_attempted
+
+df_Degrees<-df_Degrees %>%
+           mutate(hours_earned_rate=hours_earned/hours_attempted)
+
+```
+
+Density plot of Hours Earned Rate by year
+```{r}
+ggplot(df_Degrees, aes(hours_earned_rate, fill = term_year)) + geom_density(alpha = 0.3) +
+  facet_wrap(~full_part)+
+  xlab("Hours Earned Rate") +
+  ylab( "Density")+
+  xlim(0,1)
+```
+
+
+## Create New Variable unearned_hours
+Unearned hours are attempted hours that the student did not receive credit for. 
+```{r}
+
+df_Degrees<-df_Degrees %>%
+           mutate(unearned_hours = hours_attempted-hours_earned)
+
+
+```
+
+Density plot of unearned hours per a year
+```{r}
+ggplot(df_Degrees, aes(unearned_hours, fill = term_year)) + geom_density(alpha = 0.3) +
+  facet_wrap(~full_part)+
+  xlab("Unearned hours") +
+  ylab( "Density") +
+  xlim (0,18)
+```
+
+
+
+
+
+# Exploratory Data Analysis
+
+## Hours Earned as a Measure of Progress
+
+Earned credits (hours earned) are the only indication whether a student is making progress towards a degree.
+
+Create New dataframe to clean hours earned and hours attempted.
+```{r}
+
+df_FTDegrees <-df_Degrees %>%
+               filter(full_part=="FT")
+
+df_FTDegrees%>% group_by(term_year)%>%
+                count(term_year)
+
+```
+
+There are 2252 full time degree seeking students in term year 2020. There are 2147 full time degree seeking students in term year 2021.
+
+
+
+12 credits is the minimum to qualify as a fulltime student. Check dataset for consistency. Remove if less than 12 hours attempted.
+Create New dataframe to clean hours earned and hours attempted.
+```{r}
+
+df_FTDegrees%>% group_by(term_year)%>%
+                count(hours_attempted<12)
+
+```
+
+
+Create a dataframe for these fulltime students who attempted less than 12 credit. Data framed called df_FT_lessC
+```{r}
+#remove certificates, NA refers to degree majors which have not been named to protect student privacy.
+df_FT_lessC<-subset(df_FTDegrees, hours_attempted<12)
+
+df_FT_lessC%>% group_by(term_year)%>%
+                count(hours_attempted<12)
+```
+There were 276 fulltime students in term year 2020 who attempted less than 12 hours. There were 162 full time students in term year 2021 who attempted less than 12 hours.
+
+
+
+create data frame for students who earned less than 3credits or more than 18 credits.
+The college offers very few 2credit courses. Students need special written permission to register for more than 18credits.
+Students with more than 18credits could be getting AP credits.
+```{r}
+#remove certificates, NA refers to degree majors which have not been named to protect student privacy.
+df_FT_outlier1<-subset(df_FTDegrees, hours_earned<3 )
+
+df_FT_outlier1%>% group_by(term_year)%>%
+                count(hours_earned<3)
+
+```
+240 students earned less than 3 credits in 2020 and 290 students earned less than 3 credits in 2021.
+
+I will drop these students from the dataframe.
+
+```{r}
+
+#drop students who earned less than 3 credits.
+df_FTDegrees<-df_FTDegrees%>% 
+                subset(hours_earned>2)
+
+df_FTDegrees%>% group_by(term_year)%>%
+                count(term_year)
+```
+
+Plot boxplot of distribution
+```{r}
+p14 = ggplot(df_FTDegrees, aes(hours_earned))
+p14 + geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~full_part)
+```
+Hours Earned Fivenum Summary
+```{r}
+df_FTDegrees%>% group_by(term_year,full_part)%>%
+  summarise(n = n(),
+            min = fivenum(hours_earned)[1],
+            Q1 = fivenum(hours_earned)[2],
+            median = fivenum(hours_earned)[3],
+            Q3 = fivenum(hours_earned)[4],
+            max = fivenum(hours_earned)[5])
+
+
+```
+
+drop students who earned more than 18credits.
+
+```{r}
+
+#drop students who earned more than 18 credits.
+df_FTDegrees<-df_FTDegrees%>% 
+                subset(hours_earned<19)
+
+df_FTDegrees%>% group_by(term_year)%>%
+                count(term_year)
+```
+
+Check GPA
+
+Plot boxplot of distribution
+```{r}
+p14 = ggplot(df_FTDegrees, aes(hours_earned))
+p14 + geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~full_part)
+```
+
+Hours Earned Fivenum Summary
+```{r}
+df_FTDegrees%>% group_by(term_year,full_part)%>%
+  summarise(n = n(),
+            min = fivenum(hours_earned)[1],
+            Q1 = fivenum(hours_earned)[2],
+            median = fivenum(hours_earned)[3],
+            Q3 = fivenum(hours_earned)[4],
+            max = fivenum(hours_earned)[5])
+
+
+```
+
+Density plot of hours_earned by year
+```{r}
+ggplot(df_FTDegrees, aes(hours_earned, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours Earned") +
+  ylab( "Density")
+  
+```
+
+Question: Who are these students who make up this distribution. 
+
+
+EDA Questions:
+Will use degree students only.
+A) How has the pandemic impacted student enrollment?
+  1. Difference in enrollement numbers, demographics (race, gender, highschool) in term year 2021 and term year 2020. 
+  2. Did students in term year 2021 attempt more or less hours than students in term year 2020.
+  3. Did students in term year 2021 earn more or less hours than students in term year 2020.
+  
+B) Hours earned is a measure of progress towards a degree.
+  4. Which subgroup is the best predictor of the population for hours earned. i.e Subgroup most like the population. ( Smallest Effect Size.)
+     Explore
+    -Race
+    -Gender
+    -High School
+    -Pell Grant
+
+
+
+
+
