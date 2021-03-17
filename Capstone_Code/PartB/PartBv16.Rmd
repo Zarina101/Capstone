@@ -230,16 +230,21 @@ df_Degrees%>% group_by(term_year)%>%
 ```
 
 ```{r}
+# change in overall student population from 2020 to 2021
+
+df_Degrees%>%
+          group_by(term_year,full_part)%>%
+          count(full_part)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(full_part)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+```{r}
 # decrease in total student population
-
 ((2251+1606)-(2147+1373))/(2251+1606)*100
-
-# percent drop in full time students from 2020 to 2021
-
-(2251-2147)/2251*100
-
-# percent drop in part time students from 2021 to 2020
-(1606-1373)/1606*100
 ```
 Degree Seeking students:
 There was an 8.7% decrease in the incoming cohort ( part time and full time) size from 2020 to 2021. 
@@ -317,25 +322,15 @@ df_Degrees%>%
 
 Full time student: Change in enrollment from 2020 to 2021 based on Race
 ```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by  race
 
-# Hispanic
-
-(741-660)/660*100
-
-#African American
-
-(510-575)/575*100
-
-#Asian
-
-(282-321)/321*100
-
-# White
-
-(344-362)/362*100
-
-# Foreign
-(180-219)/219*100
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,race)%>%
+          count(race)%>%
+          group_by(race)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
 Full time students: In 2021 there was a 12.27% increase of hispanic students when compared to 2020.The was a 11.30 % decrease in African American Students,
 12.15 % decrease in Asian Students, a 5% decrease in white students and a 17.81% decrease in foreign students. 
@@ -352,26 +347,17 @@ df_Degrees%>%
 ```
 Part time student: Change in enrollment from 2020 to 2021 based on Race
 ```{r}
+# calculate percentage change in part time student enrollment from 2020 to 2021 by  race
 
-# Hispanic
-
-(414-508)/508*100
-
-#African American
-
-(374-418)/418*100
-
-#Asian
-
-(112-143)/143*100
-
-# White
-
-(299-278)/278*100
-
-# Foreign
-(108-183)/183*100
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,race)%>%
+          count(race)%>%
+          group_by(race)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
+
 Part time degree seeking students: In 2021 there was a 18.5% decrease of hispanic part time degree seeking students when compared to 2020.
 The was a 10.53 % decrease in African American Students, 21.68 % decrease in Asian Students, a 7.5% increase in white students and a 41% decrease in foreign students. 
 
@@ -417,27 +403,36 @@ ggplot(data=df_Degrees, aes(x=age, fill=age)) +
    
 ```
 
+Age distribution of Full time Students
+
 ```{r}
-
-#full time 18-20 in 2020
-1899/2251*100
-
-
-#full time 18-20 in 2021
-1830/2147*100
-
-
-
-#part time 18-20 in 2020
-1052/1606*100
-
-
-#part time 18-20 in 2021
-965/1373*100
-
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,age)%>%
+          count(age)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(age)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))
 ```
+
 In term year 2020 and term year 2021 ,approximately 85% of the full time and part time students are between 18-20yrs.
 In term year 2020, 65.5% of the part time students were between 18-20yrs and in term year 2021, 70% students. 
+
+Age distribution of Part time Students
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,age)%>%
+          count(age)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(age)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))
+```
+
 The part time student population in term year 2020 and term year 2021 has a higher proportion of 21-24, 25-29 and 30+ and a lower proportion of under 18s than the full time student population. 
 
 
@@ -458,55 +453,81 @@ ggplot(data=df_Degrees, aes(x=sex, fill=sex)) +
 ```
 
 Gender 0 and Gender N are unknown values, however they have not been removed from the dataset as the variables of interest are hours_attempted and hours_earned.
+Some students choose not to report a gender or are transgender.This is approximately 1% of the student population.
+
+Percentage of Full time Students by Gender
 ```{r}
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))
+```
+In term year 2020, there was approximately 2.58% more full time male students than full time female students.
+In term year 2021, there was approximately 4.89% more full time female students than full time male students.
+It is evident that the full time male population have decreased more than the full time female student population in term year 2021. 
 
-#female full time students in  2020
-1083/2251*100
-#male students full time in  2020
-1141/2251*100
 
-#female full time students in  2021
-1113/2147*100
-#male students full time in  2021
-1008/2147*100
+Percentage of Part time Students by Gender
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))
+```
+In term year 2020, there was approximately 5.67 % more part time female students than part time male students.
+In term year 2021, there was approximately 3.42% more part time female students than part time male students.
 
+Calculate percentage change in full time student enrollment from 2020 to 2021 by  gender
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by  gender
 
-#female part time students in  2020
-832/1606*100
-#male students part  time in  2020
-741/1606*100
-
-#female part time students in  2021
-700/1373*100
-#male students part  time in  2021
-653/1373*100
-
-#change number of full time male from 2020 to 2021
-(1008-1141)/1141*100
-
-#change in number of full time females 2020 to 2021
-(1113-1083)/1083*100
-
-#change in number of part time males from 2020 to 2021
-(653-741)/741*100
-
-#change in number of part time females 2020 to 2021
-(700-832)/832*100
-
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
 
 Full time male students: 11.66% decline in registration
 Full time female students: 2.78% increase in registration
+
+Calculate percentage change in part time student enrollment from 2020 to 2021 by  gender
+```{r}
+# calculate percentage change in part time student enrollment from 2020 to 2021 by  gender
+
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
 
 Part time male students: 11.88% decrease in registration
 Part time female students: 15.87% decrease in registration
 
 Gender and Race breakdown of full time students
 ```{r}
-# Gender of students part time and full time  2020 vs 2021
-df_DegreesRG<- df_Degrees%>% filter(sex %in% c("F","M"))
+# Gender and Race of full time students  2020 vs 2021
 
-df_DegreesRG %>%filter(full_part=="FT")%>%
+df_Degrees%>%
+      filter(sex %in% c("F","M"))%>%
+      filter(full_part=="FT")%>%
       ggplot(., aes(x=race, fill=race)) +
       geom_bar() +
       geom_text(stat='count', aes(label=..count..), vjust=1)+
@@ -522,10 +543,11 @@ df_DegreesRG %>%filter(full_part=="FT")%>%
 
 Gender and Race breakdown of part time students
 ```{r}
-# Gender of students part time and full time  2020 vs 2021
-df_DegreesRG<- df_Degrees%>% filter(sex %in% c("F","M"))
+# Gender and Race of part time students 2020 vs 2021
 
-df_DegreesRG %>%filter(full_part=="PT")%>%
+df_Degrees %>%
+      filter(sex %in% c("F","M"))%>%
+      filter(full_part=="PT")%>%
       ggplot(., aes(x=race, fill=race)) +
       geom_bar() +
       geom_text(stat='count', aes(label=..count..), vjust=1)+
@@ -535,45 +557,41 @@ df_DegreesRG %>%filter(full_part=="PT")%>%
       xlab("")+
       theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
 
-#    theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+
 
 ```
 
-Student Enrollment trend by Gender and race
+Full time Student Enrollment Percentages trend by Gender and race
 
 ```{r}
 # calculate percentage change in student enrollment from 2020 to 2021 by race and gender
 
 # create data frames with counts of full time students by race and gender
-GR_count<-df_Degrees%>%
+df_Degrees%>%
           filter(full_part=="FT")%>%
           filter(sex=="F"|sex =="M")%>%
           group_by(term_year,race,sex)%>%
-          count(sex)
-
-
-GR_count%>%
-  group_by_(race,gender)%>%
-  arrange(term__year,.by_group=TRUE)%>%
-  mutate(pct_change= (n/lag(n)-1)*100)
-
-
-
+          count(sex)%>%
+          group_by(race,sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
-z %>%
-  group_by(VERTICAL) %>% 
-  arrange(YEAR, .by_group = TRUE) %>%
-  mutate(pct_change = (Profit/lag(Profit) - 1) * 100)
 
+
+Part time Student Enrollment Percentages trend by Gender and race
+```{r}
+# calculate percentage change in student enrollment from 2020 to 2021 by race and gender
+
+# create data frames with counts of full time students by race and gender
 df_Degrees%>%
-  group_by_(race,gender)%>%
-  arrange(term__year,.by_group=TRUE)%>%
-  mutate(pct_change=count())
-
-
+          filter(full_part=="PT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,race,sex)%>%
+          count(sex)%>%
+          group_by(race,sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
-
-
 
 
 ### Pell grant
