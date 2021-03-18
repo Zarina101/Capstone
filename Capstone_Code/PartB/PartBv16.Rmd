@@ -212,7 +212,7 @@ I have retained the majors grouped as NA.
 ```{r}
 
 #remove certificates, NA refers to degree majors which have not been named to protect student privacy.
-df_Degrees<-subset(df_initial, major!="Certificate & LR" || major =='NA')
+df_Degrees<-subset(df_initial, major!="Certificate & LR")
 df_Degrees%>%count(major)
 ```
 
@@ -248,9 +248,9 @@ df_Degrees%>%
 ```
 Degree Seeking students:
 There was an 8.7% decrease in the incoming cohort ( part time and full time) size from 2020 to 2021. 
-In term year 2020, there were 2251 full time degree seeking students and 1606 part time degree seeking students.
-In term year 2021, there were 2147 full time degree seeking students and 1373 part time degree seeking students.
-There is a 4.6 % drop in full time enrollment from 2020 to 2021. There is a 14.5 % drop in part time enrollment from 2020 to 2021.
+In term year 2020, there were 2222 full time degree seeking students and 1527 part time degree seeking students.
+In term year 2021, there were 2088 full time degree seeking students and 1286 part time degree seeking students.
+There is a 6 % drop in full time enrollment from 2020 to 2021. There is a 15.78 % drop in part time enrollment from 2020 to 2021.
 
 
 Frequency of Students Part time versus Full tim: 2020 vs 2021
@@ -259,7 +259,7 @@ Frequency of Students Part time versus Full tim: 2020 vs 2021
 # Number of students part time abnd full time  2020 vs 2021
 ggplot(data=df_Degrees, aes(x=full_part, fill=full_part)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=2)+
+      geom_text(stat='count', aes(label=..count..), vjust=2,size=3)+
       facet_wrap(~term_year)+
       ggtitle("Number of Students Full time versus Part time")+
       ylab('Frequency')+
@@ -282,7 +282,7 @@ df_Degrees %>%
                   y = prop, 
                   group = full_part),
               position = position_dodge(width = 0.9),
-              vjust = 1.5)+
+              vjust = 2,size=3)+
    facet_wrap(~term_year)+
       ggtitle("Proportion of Students Full time versus Part time")+
       ylab('Percentage')+
@@ -300,7 +300,7 @@ Count of Race Groups
 ```{r}
 ggplot(data=df_Degrees, aes(x=race, fill=race)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=-1)+
+      geom_text(stat='count', aes(label=..count..), vjust=0,size=3)+
       facet_wrap(~term_year + full_part)+
       theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())+
       ggtitle("Number of Students per a Race Group")+
@@ -309,6 +309,28 @@ ggplot(data=df_Degrees, aes(x=race, fill=race)) +
 
 
 ```
+Percentage of each race group in Student Population
+```{r}
+df_Degrees %>% 
+    group_by(term_year,full_part) %>% 
+    count(race) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = race, y = prop)) +
+    geom_col(aes(fill = race), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.1), 
+                  y = prop, 
+                  group = race),
+              position = position_dodge(width = 0.9),
+              vjust = 0,size=3)+
+    facet_wrap(~term_year + full_part)+
+      ggtitle("Race Proportion of Students: Full time versus Part time")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+   
+
+```
+Hispanic students form the largest proportion in the full time and part time student populations, followed by African American, White, Asian and Foreign students. 
 
 
 ```{r}
@@ -332,8 +354,8 @@ df_Degrees%>%
           arrange(term_year,.by_group=TRUE)%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
-Full time students: In 2021 there was a 12.27% increase of hispanic students when compared to 2020.The was a 11.30 % decrease in African American Students,
-12.15 % decrease in Asian Students, a 5% decrease in white students and a 17.81% decrease in foreign students. 
+Full time students: In 2021 there was a 10.57% increase of Hispanic students when compared to 2020.The was a 12.83 % decrease in African American Students,
+13.84 % decrease in Asian Students, a 7,54% decrease in white students and a 17.81% decrease in foreign students. 
 
 
 Part time student: Change in enrollment from 2020 to 2021 based on Race
@@ -358,33 +380,8 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
 
-Part time degree seeking students: In 2021 there was a 18.5% decrease of hispanic part time degree seeking students when compared to 2020.
-The was a 10.53 % decrease in African American Students, 21.68 % decrease in Asian Students, a 7.5% increase in white students and a 41% decrease in foreign students. 
-
-Percentage of each race group in Student Population
-```{r}
-df_Degrees %>% 
-    group_by(term_year,full_part) %>% 
-    count(race) %>% 
-    mutate(prop = n/sum(n)) %>% 
-    ggplot(aes(x = race, y = prop)) +
-    geom_col(aes(fill = race), position = "dodge") +
-    geom_text(aes(label = scales::percent(prop,0.1), 
-                  y = prop, 
-                  group = race),
-              position = position_dodge(width = 0.9),
-              vjust = 0.9)+
-    facet_wrap(~term_year + full_part)+
-      ggtitle("Race Proportion of Students: Full time versus Part time")+
-      ylab('Proportion ')+
-      xlab("")+
-      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
-   
-
-```
-
-In both term_year 2020 and 2021, Hispanic students form the largest proportion, followed by African American, White, Asian Students and Foreign students,
-in both the part time and full time students. 
+Part time degree seeking students: In 2021 there was a 19.35% decrease of Hispanic part time degree seeking students when compared to 2020.
+The was a 12.87 % decrease in African American Students, 23.48 % decrease in Asian Students, a 6.59% increase in white students and a 39.52% decrease in foreign students. 
 
 
 ### Age
@@ -394,7 +391,7 @@ Age distribution of Students Part time versus Full tim: 2020 vs 2021
 # Age distribution of students 2020 vs 2021
 ggplot(data=df_Degrees, aes(x=age, fill=age)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=1)+
+      geom_text(stat='count', aes(label=..count..), vjust=0,size=3)+
       facet_wrap(~term_year+full_part)+
       ggtitle("Age Distribution of Students: Full time versus Part time")+
       ylab('Frequency')+
@@ -418,7 +415,7 @@ df_Degrees%>%
 ```
 
 In term year 2020 and term year 2021 ,approximately 85% of the full time and part time students are between 18-20yrs.
-In term year 2020, 65.5% of the part time students were between 18-20yrs and in term year 2021, 70% students. 
+In term year 2020, 66.86% of the part time students were between 18-20yrs and in term year 2021, 70.68% students. 
 
 Age distribution of Part time Students
 ```{r}
@@ -443,7 +440,7 @@ Gender of Students
 # Gender of students part time and full time  2020 vs 2021
 ggplot(data=df_Degrees, aes(x=sex, fill=sex)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=1)+
+      geom_text(stat='count', aes(label=..count..), vjust=1,size=3)+
       facet_wrap(~term_year+full_part)+
       ggtitle("Gender of Students: Full time versus Part time")+
       ylab('Frequency')+
@@ -467,6 +464,8 @@ df_Degrees%>%
           arrange(term_year,.by_group=TRUE)%>%
           mutate(pct_pop= (n/total_pop*100))
 ```
+
+******CHECK***
 In term year 2020, there was approximately 2.58% more full time male students than full time female students.
 In term year 2021, there was approximately 4.89% more full time female students than full time male students.
 It is evident that the full time male population have decreased more than the full time female student population in term year 2021. 
@@ -484,6 +483,8 @@ df_Degrees%>%
           arrange(term_year,.by_group=TRUE)%>%
           mutate(pct_pop= (n/total_pop*100))
 ```
+***CHECK***
+
 In term year 2020, there was approximately 5.67 % more part time female students than part time male students.
 In term year 2021, there was approximately 3.42% more part time female students than part time male students.
 
@@ -501,8 +502,8 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
 
-Full time male students: 11.66% decline in registration
-Full time female students: 2.78% increase in registration
+Full time male students: 13.74% decline in registration
+Full time female students: 2.06% increase in registration
 
 Calculate percentage change in part time student enrollment from 2020 to 2021 by  gender
 ```{r}
@@ -518,8 +519,8 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
 
-Part time male students: 11.88% decrease in registration
-Part time female students: 15.87% decrease in registration
+Part time male students: 14.55% decrease in registration
+Part time female students: 15.76% decrease in registration
 
 Gender and Race breakdown of full time students
 ```{r}
@@ -530,7 +531,7 @@ df_Degrees%>%
       filter(full_part=="FT")%>%
       ggplot(., aes(x=race, fill=race)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=1)+
+      geom_text(stat='count', aes(label=..count..), vjust=0, size=3)+
       facet_wrap(~term_year+sex)+
       ggtitle("Gender and Race of Full time Students")+
       ylab('Frequency')+
@@ -550,7 +551,7 @@ df_Degrees %>%
       filter(full_part=="PT")%>%
       ggplot(., aes(x=race, fill=race)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=1)+
+      geom_text(stat='count', aes(label=..count..), vjust=0,size=3)+
       facet_wrap(~term_year+sex)+
       ggtitle("Gender and Race of Part time Students")+
       ylab('Frequency')+
@@ -576,6 +577,11 @@ df_Degrees%>%
           arrange(term_year,.by_group=TRUE)%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100) 
 ```
+Full time male students: There was a 25% decrease in asian male students, -21.23 % decrease in african american males, a 23.91 percent decrease in foreign males,
+a 10.84% decrease in white males and a 2.68% increase in Hispanic males. 
+Full time female students:  -2.26 % decrease in african american females, a 13.33 percent decrease in foreign females,
+a 4.61% decrease in white females and a 17.63% increase in Hispanic females. 
+
 
 
 Part time Student Enrollment Percentages trend by Gender and race
@@ -601,7 +607,7 @@ df_Degrees%>%
 # Pell Grant
 ggplot(data=df_Degrees, aes(x=pell_grant, fill=pell_grant)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=1)+
+      geom_text(stat='count', aes(label=..count..), vjust=3, size=3)+
       facet_wrap(~term_year+full_part)+
       ggtitle("Pell grant")+
       ylab('Frequency')+
@@ -730,7 +736,7 @@ Count of High Schools
 ```{r}
 ggplot(data=df_Degrees, aes(x=HS_classify, fill=HS_classify)) +
       geom_bar() +
-      geom_text(stat='count', aes(label=..count..), vjust=0)+
+      geom_text(stat='count', aes(label=..count..), vjust=0,size=3)+
       facet_wrap(~term_year + full_part)+
       theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())+
       ggtitle("High Schools Students' Graduated  ")+
@@ -740,6 +746,7 @@ ggplot(data=df_Degrees, aes(x=HS_classify, fill=HS_classify)) +
 
 ```
 The majority of full time and part time students are from MCPS highschools
+
 
 Proportion of Students from Highschools
 ```{r}
@@ -753,7 +760,7 @@ df_Degrees %>%
                   y = prop, 
                   group = HS_classify),
               position = position_dodge(width = 0.9),
-              vjust = 0.5)+
+              vjust = 0.25,size=3)+
     facet_wrap(~term_year + full_part)+
       ggtitle("High schools students graduated")+
       ylab('Proportion ')+
@@ -763,10 +770,288 @@ df_Degrees %>%
 
 ```
 75.5% of full time degree students in term year 2020 and term year 2021 graduated from MCPS highschools.
-57.5% of part time degree students in term year 2020 and 63.5% of part time students in term year 2021 graduated from MCPS highschool.
+58% of part time degree students in term year 2020 and 64% of part time students in term year 2021 graduated from MCPS highschool.
+
+Breakdown of Highschools Full time students in term year 2020 attended in MCPS
+```{r}
+df_Degrees%>%
+          filter(full_part=="FT" & term_year=="2020")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+  
+```
+
+
+The Graph below gives the overall proportions of full time students from highschools in MCPS in term_year 2020. As there are 25 highschools, I have not included the key.
+The table above give the percentages of Full time students who attended each high school.
+In term year 2020: 
+7.93% of full time students finished high school at Gaithersburg High. 
+6.32% from Montgomery Blair HS.
+5.54% from Springbok Sr High School.
+5.49% from Northwest HS - Germantown.
+5.49% from Paint Branch High School.
+9 highschools had a arrange between 4 and 5%
+On the other end of the spectrum:
+Walt Whitman High School at 1.13%.
+Poolesville Jr-Sr High School 1.31%
+Winston Churchill 2.03%
+Thomas Sprigg Wootton High Sch 2.03%
+
+
+
+
+```{r}
+v1<- df_Degrees %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="FT" & term_year=="2020")%>%
+    filter(HS_classify=="MCPS")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools full time students graduated in term year 2020 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v1+ coord_flip()  
+```
+
+
+Breakdown of Highschools Full time students in term year 2021 attended in MCPS
+```{r}
+df_Degrees%>%
+          filter(full_part=="FT" & term_year=="2021")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+
+```
+
+```{r}
+v2<-df_Degrees %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="FT" & term_year=="2021")%>%
+    filter(HS_classify=="MCPS")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size =3,hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High Schools Full time students in term year 2021 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v2+ coord_flip()   
+```
+
+
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by MCPS highschool
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+     
+  
+```
+
+Full time students: Gaitherburg High had a 31.58% decrease in enrollment. Poolesville Jr-Sr High School 36.36% decrease. Springbrook Sr High School a 31.18% decrease.
+Walter Johnson High School 28.38% decrease. Rockville High increased enrollment by 40.43%
+
+A more detailed visualisation will be presented on Tableau in EDA.
+
+
+Highs Schools Part time Students Graduated from. term year 2020 vs term year 2021
+
+Part time students term year 2020: 
+```{r}
+q1<- df_Degrees %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="PT" & term_year=="2020")%>%
+    filter(HS_classify=="MCPS")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools Part time students graduated in term year 2020 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+q1+ coord_flip()  
+```
+
+Part time students term year 2021: 
+```{r}
+q2<- df_Degrees %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="PT" & term_year=="2021")%>%
+    filter(HS_classify=="MCPS")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools Part time students graduated in term year 2020 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+q2+ coord_flip()  
+```
+Breakdown of Highschools Part time students in term year 2020 attended in MCPS
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT" & term_year=="2020")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+
+```
+
+Breakdown of Highschools Part time students in term year 2021 attended in MCPS
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT" & term_year=="2021")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+
+```
+
+
+```{r}
+# calculate percentage change in part time student enrollment from 2020 to 2021 by MCPS highschool
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          filter(HS_classify=="MCPS")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+     
+```
+
+
+
 
 
 ### Majors
+
+Overall Majors trend
+
+Count of Majors in Full time students in 2020
+```{r}
+z1<- df_Degrees%>%
+      filter(full_part=="FT" &term_year =="2020")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2020  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z1 + coord_flip()
+```
+
+
+Count of Majors in Full time students in 2021
+```{r}
+z1<- df_Degrees%>%
+      filter(full_part=="FT" &term_year =="2021")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2021  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z1 + coord_flip()
+```
+
+# calculate percentage change in full time student majors from 2020 to 2021 
+```{r}
+df_Degrees%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,major)%>%
+          count(major)%>%
+          group_by(term_year)%>%
+          group_by(major)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+```
+
+
+
+
+Majors by Highschool
+
+Majors by Gender
+
+Majors by Race
+
+
+
+
+
 
 
 ## Registration in Summer School 1
