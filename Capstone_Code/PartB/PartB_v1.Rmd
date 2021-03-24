@@ -216,6 +216,12 @@ df_Degrees<-subset(df_initial, major!="Certificate & LR")
 df_Degrees%>%count(major)
 ```
 
+save dataframe Degrees
+```{r}
+write.csv(df_Degrees,'df_Degrees.csv')
+
+```
+
 ## Demographics of Degree Seeking Students
 
 
@@ -1014,7 +1020,7 @@ z1 + coord_flip()
 
 Count of Majors in Full time students in 2021
 ```{r}
-z1<- df_Degrees%>%
+z13<- df_Degrees%>%
       filter(full_part=="FT" &term_year =="2021")%>%
        ggplot(., aes(x=major, fill=major)) +
       geom_bar() +
@@ -1024,10 +1030,10 @@ z1<- df_Degrees%>%
       ylab("Frequency")+
     theme(legend.position = "none") 
        
-z1 + coord_flip()
+z13 + coord_flip()
 ```
 
-# calculate percentage change in full time student majors from 2020 to 2021 
+calculate percentage change in full time student majors from 2020 to 2021 
 ```{r}
 df_Degrees%>%
           filter(full_part=="FT")%>%
@@ -1039,12 +1045,51 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100)
 ```
 
+Count of Majors in Part time students in 2020
+```{r}
+z11<- df_Degrees%>%
+      filter(full_part=="PT" &term_year =="2020")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2020  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z11 + coord_flip()
+```
+Count of Majors in Part time students in 2021
+```{r}
+z12<- df_Degrees%>%
+      filter(full_part=="PT" &term_year =="2021")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2021  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z12 + coord_flip()
+```
 
-
-
-Majors by Highschool
+calculate percentage change in part time student majors from 2020 to 2021 
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,major)%>%
+          count(major)%>%
+          group_by(term_year)%>%
+          group_by(major)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+```
 
 Majors by Gender
+
+
+
 
 Majors by Race
 
@@ -1262,7 +1307,7 @@ ggplot(df_Degrees, aes(unearned_hours, fill = term_year)) + geom_density(alpha =
 
 
 
-# Exploratory Data Analysis
+# Research Questions
 
 ## Hours Earned as a Measure of Progress
 

@@ -1,0 +1,77 @@
+---
+title: "Untitled"
+author: "Ulita Gilbert"
+date: "18/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#import libraries
+
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+library (janitor)
+library(skimr)
+library(plotly)
+library(scales)
+library(httr)
+library(jsonlite)
+library(lubridate)
+```
+
+## Import Data
+```{r}
+#import data for Fall 2016 to Fall 2020
+# set directory
+setwd('/Users/ulita/Documents/CAPSTONE205/Capstone/Capstone_Data/Raw_Data')
+
+
+df_initial2016<-read_xlsx("FTEIC F16.xlsx")
+df_initial2017<-read_xlsx("FTEIC F17.xlsx")
+df_initial2018<-read_xlsx("FTEIC F18.xlsx")
+df_initial2019<-read_xlsx("FTEIC F19.xlsx")
+df_initial2020<-read_xlsx("FTEIC F20.xlsx")
+
+
+
+```
+
+
+```{r}
+
+df_initial<- bind_rows(initial_df_2016,initial_df_2017,initial_df_2018)
+
+```
+
+
+```{r}
+
+
+## Select Columns of Interest & Format Names
+
+
+#clean names using janitor package
+df_initial<-df_initial %>%
+             clean_names()
+
+#drop columns not interested in
+
+df_initial<-df_initial %>%
+             select(c(1:20))
+
+# rename columns to make it user friendly
+df_initial<-df_initial %>%
+            rename("age"= "age_at_start", "race"= "ipeds_race_desc", 'summer1'= "term_year1_10", 'fall'='term_year1_20')
+
+``` 
+
+
+
+
+
+

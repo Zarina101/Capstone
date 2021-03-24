@@ -80,9 +80,12 @@ jsonRespParsed <- content(r, as="parsed")
 #jsonRespParsed
 
 df_MC <- fromJSON(jsonRespText)
-#head(df_MC)
+head(df_MC)
 #class(df_MC)
 df_MCPS <- as_tibble(df_MC)
+
+df_MCPS <-df_MCPS  %>%
+             select(c(1,2,4,9,13))
 
 ```
 
@@ -215,6 +218,7 @@ I have retained the majors grouped as NA.
 df_Degrees<-subset(df_initial, major!="Certificate & LR")
 df_Degrees%>%count(major)
 ```
+
 
 ## Demographics of Degree Seeking Students
 
@@ -688,10 +692,44 @@ df_MCPS
 
 ```{r}
 
-
 df_Degrees<- df_Degrees %>%
-              mutate( MCPS = df_Degrees$high_school%in% df_MCPS$school_name)
+              mutate( MCPS = df_Degrees$high_school %in% df_MCPS$school_name)
 
+
+
+```
+
+
+```{r}
+df_MCPS<-df_MCPS%>% rename('high_school'='school_name' , 'HS_city' ='city', 'HS_zip' = 'zip_code')
+
+
+
+```
+
+```{r}
+df_Degrees2<-df_Degrees%>%
+                left_join(df_MCPS)
+
+
+```
+
+
+
+save dataframes Degrees
+```{r}
+write_csv(df_Degrees,'df_Degrees.csv')
+```
+
+```{r}
+
+write_csv(df_MCPS,'df_MCPS.csv')
+
+```
+
+
+
+```{r}
 df_Degrees%>%
   group_by(term_year,full_part)%>%
   filter(MCPS==TRUE)%>%
@@ -1014,7 +1052,7 @@ z1 + coord_flip()
 
 Count of Majors in Full time students in 2021
 ```{r}
-z1<- df_Degrees%>%
+z13<- df_Degrees%>%
       filter(full_part=="FT" &term_year =="2021")%>%
        ggplot(., aes(x=major, fill=major)) +
       geom_bar() +
@@ -1024,10 +1062,10 @@ z1<- df_Degrees%>%
       ylab("Frequency")+
     theme(legend.position = "none") 
        
-z1 + coord_flip()
+z13 + coord_flip()
 ```
 
-# calculate percentage change in full time student majors from 2020 to 2021 
+calculate percentage change in full time student majors from 2020 to 2021 
 ```{r}
 df_Degrees%>%
           filter(full_part=="FT")%>%
@@ -1039,12 +1077,51 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100)
 ```
 
+Count of Majors in Part time students in 2020
+```{r}
+z11<- df_Degrees%>%
+      filter(full_part=="PT" &term_year =="2020")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2020  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z11 + coord_flip()
+```
+Count of Majors in Part time students in 2021
+```{r}
+z12<- df_Degrees%>%
+      filter(full_part=="PT" &term_year =="2021")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2021  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z12 + coord_flip()
+```
 
-
-
-Majors by Highschool
+calculate percentage change in part time student majors from 2020 to 2021 
+```{r}
+df_Degrees%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,major)%>%
+          count(major)%>%
+          group_by(term_year)%>%
+          group_by(major)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+```
 
 Majors by Gender
+
+
+
 
 Majors by Race
 
@@ -1186,7 +1263,9 @@ df_Degrees%>% group_by(term_year,full_part)%>%
             Q1 = fivenum(hours_earned)[2],
             median = fivenum(hours_earned)[3],
             Q3 = fivenum(hours_earned)[4],
-            max = fivenum(hours_earned)[5])
+            max = fivenum(hours_earned)[5],
+            mean = mean(hours_earned),
+            std = sd(hours_earned))
 
 
 ```
@@ -1262,7 +1341,7 @@ ggplot(df_Degrees, aes(unearned_hours, fill = term_year)) + geom_density(alpha =
 
 
 
-# Exploratory Data Analysis
+# Research Questions
 
 ## Hours Earned as a Measure of Progress
 
