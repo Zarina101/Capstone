@@ -108,7 +108,7 @@ df_initial<-df_initial %>%
 #drop columns not interested in
 
 df_initial<-df_initial %>%
-             select(c(1:20))
+            dplyr::select(c(1:20))
 
 # rename columns to make it user friendly
 df_initial<-df_initial %>%

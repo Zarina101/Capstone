@@ -1164,7 +1164,9 @@ df_Degrees%>% group_by(term_year,full_part)%>%
             Q1 = fivenum(hours_attempted)[2],
             median = fivenum(hours_attempted)[3],
             Q3 = fivenum(hours_attempted)[4],
-            max = fivenum(hours_attempted)[5])
+            max = fivenum(hours_attempted)[5],
+            mean= mean(hours_attempted),
+            sd = sd(hours_attempted))
 
 
 ```
@@ -1231,10 +1233,23 @@ df_Degrees%>% group_by(term_year,full_part)%>%
             Q1 = fivenum(hours_earned)[2],
             median = fivenum(hours_earned)[3],
             Q3 = fivenum(hours_earned)[4],
-            max = fivenum(hours_earned)[5])
+            max = fivenum(hours_earned)[5],
+            mean= mean(hours_earned),
+            sd = sd(hours_earned))
 
 
 ```
+
+QQplot of hours earned by Fulltime Students.
+```{r}
+
+d1<- df_Degrees%>%filter(full_part=="FT")
+
+p<-qplot(sample = hours_earned, data = d1, color=term_year)
+p
+```
+
+
 
 Hours Earned Summary
 The distributions appeared to be skewed to the right. Incoming students are allowed to get AP credits for courses taken at highschool.
@@ -1302,6 +1317,9 @@ ggplot(df_Degrees, aes(unearned_hours, fill = term_year)) + geom_density(alpha =
   ylab( "Density") +
   xlim (0,18)
 ```
+
+
+
 
 
 
