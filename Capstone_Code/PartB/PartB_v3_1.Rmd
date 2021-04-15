@@ -259,7 +259,7 @@ In term year 2021, there were 2088 full time degree seeking students and 1286 pa
 There is a 6 % drop in full time enrollment from 2020 to 2021. There is a 15.78 % drop in part time enrollment from 2020 to 2021.
 
 
-Frequency of Students Part time versus Full tim: 2020 vs 2021
+Frequency of Students Part time versus Full time: 2020 vs 2021
 ```{r}
 
 # Number of students part time abnd full time  2020 vs 2021
@@ -1086,18 +1086,6 @@ df_Degrees%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100)
 ```
 
-Majors by Gender
-
-
-
-
-Majors by Race
-
-
-
-
-
-
 
 ## Registration in Summer School 1
 Hours attempted in Summer 1 are reported with hours_attempted in Fall.
@@ -1392,8 +1380,16 @@ df_Degrees%>% filter(term_year=="2020")%>%
 ```
 
 
+------
+Save data Frames for statistical analysis.
+```{r}
+write_csv(df_Degrees,"Degrees_Data")
 
+df_MC<-df_MC%>%
+  select("school_name","zip_code","city","latitude","longitude")
 
+write_csv(df_MC,"MCPS_Data")
 
+```
 
 

@@ -1,0 +1,449 @@
+---
+title: "Reseach Questions"
+author: "Ulita Gilbert"
+date: "4/14/2021"
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+library (janitor)
+library(skimr)
+library(plotly)
+library(scales)
+library(httr)
+library(jsonlite)
+library(lubridate)
+```
+
+# Introduction
+
+In this part of my project I will refine my research questions. I will further examine the effects of the pandemic on recent MCPS highschool graduates enrolled at Montgomery College. For the purposes of this study I will limit my dataset to MCPS students under the age of 20. These MCPS students will be divided further into subgroups based on Gender and Race. The datasets used in this part of my project have already been cleaned in my initial data analysis. Outliers have not been removed. I will conduct my statistical analysis with and without the outliers. 
+
+
+# Data Dictionary
+
+For the purposes of this Project the following variables and definitions are important.
+
+The population in this dataset is the incoming cohort of students in Fall of 2019 and 2020. These students are first time degree or certificate seekers and have no prior tertiary education. They may have earned AP credits in highschool.
+
+**Fall2019** refers to the incoming freshman cohort in Fall2019. This is term year 2020.  
+**Fall2020** refers to the incoming freshman cohort in Fall2020. This is term year 2021.
+
+**Variables of Interest:** 
+**term year ** Incoming students in Fall2019 are assigned to term year 2020. Incoming students in Fall 2020 are assigned to term year 2021.  
+**hours_earned:** refers to credit hours the student has earned in their first Fall semester ( this can include credits earned in Summer school second session- Summer 1 and AP credits earned in high school).  
+**hours_attempted:** refers to credit  and non credit hours the student has attempted in their first Fall semester  ( this may include credits attempted in Summerschool second session - Summer 1).  
+**full_part:** is the student full-time (FT) or part-time (PT). Part time students are registered in less than 12 credit hours. Full-time students take at least 12 credits.
+**major:** degree programme student is registered for or certificate&LR ( letter of recommendation.) All certificates and letters of recommendations have been grouped together.   
+**hours_earned_rate:** Ratio of hours_earned/hours_attempted 
+**age:** Age of student at start of program.  
+**race:** Racial classification of student.
+**sex:** Gender classification of student.
+**high_school:** Name of highschool student graduted from. Public High schools in Montgomery county are classified as MCPS.
+**pell:** Whether the student receives a pell grant or not. 
+
+
+# Data Wrangling
+## Import Data 
+
+```{r}
+#import data for Fall 2016 to Fall 2020
+# set directory
+setwd('/Users/ulita/Documents/CAPSTONE205/Capstone/Capstone_Code/Statistical_Analysis')
+
+#degrees_df<-read_csv("Degrees_Data")
+#MCPS_list<-read_csv("MCPS_Data")
+
+```
+
+
+## Create DataFrame of students who graduated MCPS high schools who are 20yrs and under .
+
+Use the dataframe df_Degrees which has been cleaned in the initial data analysis.
+Filter all MCPS students who are 20yrs and younger in age. 
+```{r}
+df_MCPS20D<-df_Degrees %>%                    
+         filter(HS_classify=="MCPS")%>%    # filter degrees dataset to obtain students who graduated MCPS highschools
+         filter(age=='18 - 20' | age =="< 18") # filter students who are 20yrs old and younger. 
+
+```
+
+
+# Demographics of Students who graduated from MCPS highschools and are 20yrs and younger.
+
+## Full time versus Part-time Degree Students
+
+Frequency of Students Part time versus Full tim: 2020 vs 2021
+```{r}
+
+# Number of students part time abnd full time  2020 vs 2021
+ggplot(data=df_MCPS20D, aes(x=full_part, fill=full_part)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=2,size=3)+
+      facet_wrap(~term_year)+
+      ggtitle("Number of Students Full time versus Part time")+
+      ylab('Frequency')+
+      xlab("")+
+      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+   
+```
+
+```{r}
+# change in overall MCPS student population from 2020 to 2021
+
+df_MCPS20D%>%
+          group_by(term_year,full_part)%>%
+          count(full_part)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(full_part)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+There was a 5.98% decrease in full time students who graduated from MCPS highschools in term year 2021. There was a -6.74% decrease in part time students who graduated from MCPS.
+
+## Race
+
+Count of Race Groups
+```{r}
+ggplot(data=df_MCPS20D, aes(x=race, fill=race)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0,size=3)+
+      facet_wrap(~term_year + full_part)+
+      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())+
+      ggtitle("Number of Students per a Race Group")+
+      xlab("Race")+
+      ylab("Frequency")
+
+
+```
+
+
+Full time student: Change in enrollment from 2020 to 2021 based on Race
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by  race
+
+df_MCPS20D%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,race)%>%
+          count(race)%>%
+          group_by(race)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+Full time students: There was a 16.5% decline in asian students, 16.1% decline in African American students, a 9.1% decline in white students and 6.8% decline in foreign students. 
+Hispanic students increased by 11.6%.
+
+Part time student: Change in enrollment from 2020 to 2021 based on Race
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by  race
+
+df_MCPS20D%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,race)%>%
+          count(race)%>%
+          group_by(race)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+Part time students: There was an 8.7% decrease in Asian students, a 26% decrease in foreign students, 2.3% increase in african american students and a 19.6% decrease in hispanic students. There was a 31.25% increase in white students. 
+
+## Gender
+Gender of Students 
+```{r}
+
+# Gender of students part time and full time  2020 vs 2021
+ggplot(data=df_MCPS20D, aes(x=sex, fill=sex)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=1,size=3)+
+      facet_wrap(~term_year+full_part)+
+      ggtitle("Gender of Students: Full time versus Part time")+
+      ylab('Frequency')+
+      xlab("")+
+      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+   
+```
+
+Calculate percentage change in full time student enrollment from 2020 to 2021 by  gender
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by  gender
+
+df_MCPS20D%>%
+          filter(full_part=="FT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+Full time students: 14% decrease in attendance by male students. A 3.27% decrease in female students.
+
+
+Calculate percentage change in part time student enrollment from 2020 to 2021 by  gender
+```{r}
+# calculate percentage change in part time student enrollment from 2020 to 2021 by  gender
+
+df_MCPS20D%>%
+          filter(full_part=="PT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,sex)%>%
+          count(sex)%>%
+          group_by(sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+Part time: 9.5% decrease in female students. 1.5% decrease in male students. 
+
+
+
+Gender and Race breakdown of full time students
+```{r}
+# Gender and Race of full time students  2020 vs 2021
+
+df_MCPS20D%>%
+      filter(sex %in% c("F","M"))%>%
+      filter(full_part=="FT")%>%
+      ggplot(., aes(x=race, fill=race)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, size=3)+
+      facet_wrap(~term_year+sex)+
+      ggtitle("Gender and Race of Full time Students")+
+      ylab('Frequency')+
+      xlab("")+
+      theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+
+#    theme(axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank())
+
+```
+
+Full time Student Enrollment Percentages trend by Gender and race
+
+```{r}
+# calculate percentage change in student enrollment from 2020 to 2021 by race and gender
+
+# create data frames with counts of full time students by race and gender
+df_MCPS20D%>%
+          filter(full_part=="FT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,race,sex)%>%
+          count(sex)%>%
+          group_by(race,sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+
+Part time Student Enrollment Percentages trend by Gender and race
+```{r}
+# calculate percentage change in student enrollment from 2020 to 2021 by race and gender
+
+# create data frames with counts of full time students by race and gender
+df_MCPS20D%>%
+          filter(full_part=="PT")%>%
+          filter(sex=="F"|sex =="M")%>%
+          group_by(term_year,race,sex)%>%
+          count(sex)%>%
+          group_by(race,sex)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100) 
+```
+
+
+### Majors
+
+Overall Majors trend
+
+Count of Majors in Full time students in 2020
+```{r}
+z1<- df_MCPS20D%>%
+      filter(full_part=="FT" &term_year =="2020")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2020  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z1 + coord_flip()
+```
+
+Count of Majors in Full time students in 2021
+```{r}
+z13<- df_MCPS20D%>%
+      filter(full_part=="FT" &term_year =="2021")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Full-time Students in 2021  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z13 + coord_flip()
+```
+
+
+calculate percentage change in full time student majors from 2020 to 2021 
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,major)%>%
+          count(major)%>%
+          group_by(term_year)%>%
+          group_by(major)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+```
+
+Count of Majors in Part time students in 2020
+```{r}
+z11<- df_MCPS20D%>%
+      filter(full_part=="PT" &term_year =="2020")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Part-time Students in 2020  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z11 + coord_flip()
+```
+Count of Majors in Part time students in 2021
+```{r}
+z12<- df_MCPS20D%>%
+      filter(full_part=="PT" &term_year =="2021")%>%
+       ggplot(., aes(x=major, fill=major)) +
+      geom_bar() +
+      geom_text(stat='count', aes(label=..count..), vjust=0, hjust=0, size =3)+
+      ggtitle("Majors of Part-time Students in 2021  ")+
+      xlab("Major")+
+      ylab("Frequency")+
+    theme(legend.position = "none") 
+       
+z12 + coord_flip()
+```
+
+calculate percentage change in part time student majors from 2020 to 2021 
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,major)%>%
+          count(major)%>%
+          group_by(term_year)%>%
+          group_by(major)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)
+```
+
+
+# Statistical Analysis
+
+For the purposes of this analysis I will run the analysis first with outliers and then after removing outliers.
+
+
+## Hours Attempted
+
+### With Outliers
+
+Boxplots of hours_attempted by year by MCPS students 20yrs and younger
+```{r}
+p11 = ggplot(df_MCPS20D, aes(hours_attempted))
+p11 + geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~full_part)
+```
+
+Students who register for more than 18 credits require special permission from the department.
+Further more a full time student is classified as someone who is enrolled in 12 or more credits. A part time student is classified
+as someone who is enrolled in less than 12 credits. 
+
+Density plot of hours_attempted by year
+```{r}
+ggplot(df_MCPS20D, aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+#### Hispanic Students
+
+```{r}
+
+df_MCPS20D%>%filter(race=="Hispanic")%>%
+  ggplot(., aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+#### African American Students
+
+```{r}
+
+df_MCPS20D%>%filter(race=="Black / African Am.")%>%
+  ggplot(., aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+#### Asian Students
+
+```{r}
+
+df_MCPS20D%>%filter(race=="Asian")%>%
+  ggplot(., aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+
+#### White Students
+
+```{r}
+
+df_MCPS20D%>%filter(race=="White")%>%
+  ggplot(., aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~full_part)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
+
+```{r}
+
+df_MCPS20D%>%filter(full_part=="FT")%>%
+  filter(race=="White" |race=="Asian" |race=="Hispanic" |race=="Black / African Am." )%>%
+  ggplot(., aes(hours_attempted, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~race)+
+  xlab("Hours attempted") +
+  ylab( "Density")
+
+```
+
