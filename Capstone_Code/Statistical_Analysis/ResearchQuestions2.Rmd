@@ -3,11 +3,11 @@ title: "Reseach Questions"
 author: "Ulita Gilbert"
 date: "4/14/2021"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     fig_caption: yes
     number_sections: yes
-    toc: yes
-  pdf_document:
     toc: yes
 ---
 
@@ -952,3 +952,47 @@ df_MCPS20D%>%filter(full_part=="PT")%>%
 ```
 
 
+## Distribution of Variables and Correlation 
+```{r,message=FALSE}
+
+library(GGally)
+# plot distributions and correlation of variables
+df_MCPS20D%>% filter(term_year=="2020")%>%
+              filter(full_part=="FT")%>%
+              ggpairs(., columns = c("hours_attempted","hours_earned", "mc_gpa","hours_earned_rate"))
+
+```
+
+
+```{r,message=FALSE}
+
+library(GGally)
+# plot distributions and correlation of variables
+df_MCPS20D%>% filter(term_year=="2021")%>%
+              filter(full_part=="FT")%>%
+              ggpairs(., columns = c("hours_attempted","hours_earned", "mc_gpa","hours_earned_rate"))
+
+```
+
+
+## Distribution of Variables and Correlation 
+```{r,message=FALSE}
+
+library(GGally)
+# plot distributions and correlation of variables
+df_MCPS20D%>% filter(term_year=="2020")%>%
+              filter(full_part=="PT")%>%
+              ggpairs(., columns = c("hours_attempted","hours_earned", "mc_gpa","hours_earned_rate"))
+
+```
+
+
+```{r,message=FALSE}
+
+library(GGally)
+# plot distributions and correlation of variables
+df_MCPS20D%>% filter(term_year=="2021")%>%
+              filter(full_part=="PT")%>%
+              ggpairs(., columns = c("hours_attempted","hours_earned", "mc_gpa","hours_earned_rate"))
+
+```
