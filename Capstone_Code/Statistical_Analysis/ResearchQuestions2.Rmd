@@ -56,14 +56,28 @@ The population in this dataset is the incoming cohort of students in Fall of 201
 # Data Wrangling
 ## Import Data 
 
-```{r}
+```{r, include=FALSE}
 #import data for Fall 2016 to Fall 2020
-# set directory
+#set directory
 setwd('/Users/ulita/Documents/CAPSTONE205/Capstone/Capstone_Code/Statistical_Analysis')
 
-#degrees_df<-read_csv("Degrees_Data")
-#MCPS_list<-read_csv("MCPS_Data")
+df_Degrees<-read_csv("Degrees_Data.csv")
+#df_MCPS20D<-read_csv("df_MCPS20D.csv")
+#MCPS_list<-read_csv("MCPS_Data.csv")
 
+```
+
+Summary of Data and Types
+```{r}
+
+skim(df_Degrees)
+
+```
+
+Change Datatypes
+```{r}
+df_Degrees$u_number<- as.character(df_Degrees$u_number)
+df_Degrees$term_year<- as.character(df_Degrees$term_year)
 ```
 
 
@@ -264,7 +278,7 @@ df_MCPS20D%>%
 ```
 
 
-### Majors
+## Majors
 
 Overall Majors trend
 
@@ -352,6 +366,193 @@ df_MCPS20D%>%
           mutate(pct_change= (n-lag(n))/lag(n)*100)
 ```
 
+## High Schools
+
+### Full time Student
+
+Breakdown of Highschools Full time students in term year 2020 attended in MCPS
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="FT" & term_year=="2020")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+  
+```
+
+Breakdown of Highschools Full time students in term year 2021 attended in MCPS
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="FT" & term_year=="2021")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+  
+```
+
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by MCPS highschool
+df_MCPS20D%>%
+          filter(full_part=="FT")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)%>%
+          arrange(desc(pct_change))
+     
+  
+```
+
+```{r}
+v1<- df_MCPS20D %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="FT" & term_year=="2020")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools full time students graduated in term year 2020 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v1+ coord_flip()  
+```
+
+```{r}
+v1<- df_MCPS20D %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="FT" & term_year=="2021")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools full time students graduated in term year 2021 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v1+ coord_flip()  
+```
+
+
+### Part time Student
+
+Breakdown of Highschools Part time students in term year 2020 attended in MCPS
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="PT" & term_year=="2020")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+  
+```
+
+Breakdown of Highschools Part time students in term year 2021 attended in MCPS
+```{r}
+df_MCPS20D%>%
+          filter(full_part=="PT" & term_year=="2021")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          mutate(total_pop =sum(n))%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_pop= (n/total_pop*100))%>%
+          arrange(desc(pct_pop))
+  
+```
+
+```{r}
+# calculate percentage change in full time student enrollment from 2020 to 2021 by MCPS highschool
+df_MCPS20D%>%
+          filter(full_part=="PT")%>%
+          group_by(term_year,high_school)%>%
+          count(high_school)%>%
+          group_by(term_year)%>%
+          group_by(high_school)%>%
+          arrange(term_year,.by_group=TRUE)%>%
+          mutate(pct_change= (n-lag(n))/lag(n)*100)%>%
+          arrange(desc(pct_change))
+     
+  
+```
+
+```{r}
+v3<- df_MCPS20D %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="PT" & term_year=="2020")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools Part time students graduated in term year 2020 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v3+ coord_flip()  
+```
+
+```{r}
+v4<- df_MCPS20D %>% 
+    group_by(term_year,full_part) %>% 
+    filter(full_part=="PT" & term_year=="2021")%>%
+    count(high_school) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = high_school, y = prop)) +
+    geom_col(aes(fill=high_school), position = "dodge") +
+    geom_text(aes(label = scales::percent(prop,0.5), 
+                  y = prop, 
+                  group = high_school),
+              position = position_dodge(width = 0.9),
+              vjust = 0, size=3, hjust=0)+
+  #  facet_wrap(~term_year )+
+      ggtitle("High schools Part time students graduated in term year 2021 graduated")+
+      ylab('Proportion ')+
+      xlab("")+
+      theme(legend.position = "none", axis.text.x=element_blank(),strip.background = element_blank(),panel.grid = element_blank()) 
+  
+v4 + coord_flip()  
+```
+
+
+
 
 # Statistical Analysis with Outliers
 
@@ -359,7 +560,6 @@ For the purposes of this analysis I will run the analysis first with outliers an
 
 
 ## Hours Attempted
-
 
 
 Boxplots of hours_attempted by year by MCPS students 20yrs and younger
@@ -688,3 +888,67 @@ df_MCPS20D%>% filter(full_part=="PT")%>%
 ```
  
  
+ ## Hours Earned Rate
+ 
+ Density plot of Hours Earned Rate by year
+```{r}
+ggplot(df_MCPS20D, aes(hours_earned_rate, fill = term_year)) + geom_density(alpha = 0.3) +
+  facet_wrap(~full_part)+
+  xlab("Hours Earned Rate") +
+  ylab( "Density")+
+  xlim(0,1)
+```
+
+Boxplots of Hours Earned Rate  of Full time MCPS students 20yrs and younger
+```{r}
+
+
+df_MCPS20D%>%filter(full_part=="FT")%>%
+  filter(race=="White" |race=="Asian" |race=="Hispanic" |race=="Black / African Am." )%>%
+   ggplot(., aes(hours_earned_rate))+
+   geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~race)
+```
+
+
+
+Boxplots of Hours Earned Rate  of Part time MCPS students 20yrs and younger
+```{r}
+
+
+df_MCPS20D%>%filter(full_part=="PT")%>%
+  filter(race=="White" |race=="Asian" |race=="Hispanic" |race=="Black / African Am." )%>%
+   ggplot(., aes(hours_earned_rate))+
+   geom_boxplot(aes(colour = term_year)) +
+       facet_wrap(~race)
+```
+
+
+Hours Earned Rate of full time students 
+```{r}
+
+df_MCPS20D%>%filter(full_part=="FT")%>%
+  filter(race=="White" |race=="Asian" |race=="Hispanic" |race=="Black / African Am." )%>%
+  ggplot(., aes(hours_earned_rate, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~race)+
+  xlab("GPA") +
+  ylab( "Density")+
+   ggtitle(" Hours Earned Rate of Full-time Students")
+
+```
+
+
+Hours Earned Rate of part time students 
+```{r}
+
+df_MCPS20D%>%filter(full_part=="PT")%>%
+  filter(race=="White" |race=="Asian" |race=="Hispanic" |race=="Black / African Am." )%>%
+  ggplot(., aes(hours_earned_rate, fill = term_year)) + geom_density(alpha = 0.2) +
+  facet_wrap(~race)+
+  xlab("GPA") +
+  ylab( "Density")+
+   ggtitle(" Hours Earned Rate of Part-time Students")
+
+```
+
+
